@@ -908,15 +908,16 @@ document.getElementById("stamp").textContent="2026-09-15 작성";
   var q=new URLSearchParams(location.search);
   if(q.get("shot")!=="1") return;
   document.documentElement.dataset.theme=q.get("theme")||"light";
-  document.documentElement.style.background="var(--surface)";
-  document.body.style.background="var(--surface)";
+  var bgc = q.get("bg") ? "#"+q.get("bg") : "var(--surface)";
+  document.documentElement.style.background=bgc;
+  document.body.style.background=bgc;
   document.querySelector(".wrap").style.cssText="max-width:none;padding:0;margin:0";
   [".mast",".tabs",".side",".ctl",".grps","footer",".hint",".readout",".zoom"].forEach(function(sel){
     var el=document.querySelector(sel); if(el) el.style.display="none";
   });
   var v=document.querySelector(".viewer");
   v.style.cssText="position:fixed;inset:0;border:0;border-radius:0;box-shadow:none;"+
-                  "aspect-ratio:auto;background:var(--surface)";
+                  "aspect-ratio:auto;background:"+bgc;
   build(q.get("m")||"A");
   exR.value=q.get("ex")||0; applyExplode();
   var showDim=q.get("dim")!=="0";
