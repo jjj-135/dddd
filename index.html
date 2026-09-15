@@ -17,7 +17,7 @@
 <title>이야기상자와 서랍장</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
 <style>
   :root{
     --paper:#F1EFE9; --surface:#FAF9F6; --surface-2:#E9E6DE;
@@ -28,7 +28,7 @@
     --wood:#DFB983; --wood-dark:#A97C43;
     --shadow:0 1px 2px rgba(33,31,27,.06), 0 8px 24px -12px rgba(33,31,27,.18);
     --sans:"Noto Sans KR", system-ui, -apple-system, "Malgun Gothic", sans-serif;
-    --mono:"IBM Plex Mono", ui-monospace, "Consolas", monospace;
+    --mono:"Noto Sans KR", system-ui, sans-serif;   /* 0 안에 점이 없는 글꼴 */
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
@@ -68,7 +68,7 @@
     border-radius:3px; overflow:hidden; background:var(--surface)}
   .spec div{padding:6px 12px; border-right:1px solid var(--rule)}
   .spec div:last-child{border-right:0}
-  .spec b{display:block; font-family:var(--mono); font-size:14px; font-weight:600}
+  .spec b{display:block; font-family:var(--mono); font-size:14px; font-weight:600; font-variant-numeric:tabular-nums}
   .spec span{display:block; font-size:10.5px; color:var(--ink-3); letter-spacing:.09em}
 
   .tabs{display:flex; gap:8px; margin:18px 0 0; flex-wrap:wrap}
@@ -95,7 +95,8 @@
     background:var(--surface); border:1px solid var(--rule); border-radius:3px;
     padding:4px 9px; pointer-events:none; opacity:.92}
   .lbl{position:absolute; transform:translate(-50%,-50%); pointer-events:none;
-    font-family:var(--mono); font-size:11.5px; font-weight:600; color:#fff;
+    font-family:var(--mono); font-size:11.5px; font-weight:700; color:#fff;
+    font-variant-numeric:tabular-nums;
     background:var(--accent); padding:1.5px 6px; border-radius:2px; white-space:nowrap;
     box-shadow:0 1px 4px rgba(0,0,0,.25)}
   .readout{position:absolute; left:12px; top:12px; max-width:64%;
@@ -103,7 +104,7 @@
     border-left:3px solid var(--accent); border-radius:3px; padding:8px 12px;
     pointer-events:none; opacity:.96}
   .readout .nm{font-weight:700; font-size:13.5px}
-  .readout .dm{font-family:var(--mono); font-size:12.5px; color:var(--ink-2); margin-top:1px}
+  .readout .dm{font-family:var(--mono); font-size:12.5px; color:var(--ink-2); margin-top:1px; font-variant-numeric:tabular-nums}
   .readout .nt{font-size:11.5px; color:var(--warn); margin-top:3px}
 
   .ctl{display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px; margin-top:12px;
@@ -134,7 +135,7 @@
 
   .dims{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule)}
   .dims div{background:var(--surface); padding:11px 12px}
-  .dims b{display:block; font-family:var(--mono); font-size:19px; font-weight:600; letter-spacing:-.02em}
+  .dims b{display:block; font-family:var(--mono); font-size:19px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
   .dims span{display:block; font-size:10.5px; color:var(--ink-3); letter-spacing:.09em; margin-top:1px}
 
   table{width:100%; border-collapse:collapse; font-size:12.5px}
@@ -147,7 +148,7 @@
   tbody tr:hover{background:var(--accent-soft)}
   tbody tr.on{background:var(--accent-soft); box-shadow:inset 3px 0 0 var(--accent)}
   td.n{font-family:var(--mono); white-space:nowrap; font-variant-numeric:tabular-nums}
-  td.q{font-family:var(--mono); text-align:right; white-space:nowrap}
+  td.q{font-family:var(--mono); text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums}
   .chg{color:var(--warn); font-size:11px; display:block}
   .sub2{color:var(--ink-3); font-size:11px; display:block}
 
@@ -285,9 +286,7 @@ var T = 15;              // 집성목 두께
 var BEV = 1.1;           // 모서리 둥글리기
 
 /* 색: 나무 외에 칠하는 조각들 */
-var COL = { comb:0xC0442F, beak:0xE3A33C, eye:0x2E2722,
-            note1:0xF0A0B8, note2:0xF3DB80, note3:0xA6C8E8,
-            pen1:0x2F4A7A, pen2:0x8C3A34, pen3:0x33302C };
+var COL = { comb:0xC0442F, beak:0xE3A33C, eye:0x2E2722 };
 
 /* ===================================================================
    부재 정의. 여기 숫자만 고치면 3D·표·치수가 같이 바뀝니다.
@@ -317,7 +316,8 @@ function modelA(){
     p({id:9, g:G, n:"서랍 옆판",   cut:"80 × 71",  q:k?0:4, x:bx,      y:by+T, z:bz, w:T, h:dh-T, d:dd-T});
     p({id:9, g:G, n:"서랍 옆판",   cut:"80 × 71",  q:0,     x:bx+dw-T, y:by+T, z:bz, w:T, h:dh-T, d:dd-T});
     p({id:10,g:G, n:"서랍 뒷판",   cut:"236 × 71", q:k?0:2, x:bx+T, y:by+T, z:bz, w:dw-2*T, h:dh-T, d:T});
-    if(!k) p({id:0, g:G, n:"손잡이", cut:"60 × 16", q:2, x:bx+103, y:by+30, z:D, w:60, h:16, d:12, sub:"별도 · 나무 막대"});
+    if(!k) p({id:11, g:G, n:"서랍 손잡이", cut:"60 × 16", q:1, x:bx+103, y:by+30, z:D, w:60, h:16, d:T,
+              sub:"아래 서랍만 (위 서랍은 버닝 글씨)"});
   });
 
   return { key:"A", title:"서랍 2칸 수납장", parts:P, W:W, H:H, D:D,
@@ -351,6 +351,7 @@ function modelB(){
   p({id:5, g:"뚜껑", n:"윗판(뚜껑)", cut:"240 × 180", q:1, x:0, y:H-T, z:0, w:W, h:T, d:D,
      ellipse:[W/2, D/2, 120, 45], sub:"타원 투입구 120 × 45"});
   p({id:6, g:"뚜껑", n:"뚜껑 받침턱", cut:"204 × 144", q:1, x:18, y:H-2*T, z:18, w:204, h:T, d:144,
+     ellipse:[102, 72, 120, 45], sub:"투입구 구멍 120 × 45",
      chg:"새로 넣음 — 뚜껑이 안 밀리게"});
 
   /* 함 네 개 : 장식판을 가운데 두고 앞뒤로 하나씩.
@@ -376,13 +377,6 @@ function modelB(){
   caddy("필기도구함 (앞)",  11,   W,   40, 120, 100, 97.5, "필기도구함", false);
   caddy("필기도구함 (뒤)",  24,   W,   40, 120, 100, 12.5, "필기도구함", true);
 
-  [[110,78,"note1"],[124,86,"note2"],[138,72,"note3"]].forEach(function(s){
-    p({id:0, g:"포스트잇함 (앞)", n:"포스트잇", cut:"", q:0, x:-70, y:16, z:s[0], w:50, h:s[1], d:9,
-       r:2, col:COL[s[2]], decor:true, sub:"참고용 · 부재 아님"});
-  });
-  [[262,116,"pen1"],[274,134,"pen2"],[286,122,"pen3"]].forEach(function(s){
-    p({id:0, g:"필기도구함 (앞)", n:"펜", cut:"", q:0, x:s[0], y:15, z:s[1], cyl:[4,150], col:COL[s[2]], decor:true, sub:"참고용 · 부재 아님"});
-  });
 
   /* 닭 앞부분 · 꼬리 : 직접 그린 도형 그대로. 함들보다 뒤(z 5~20)에 선다 */
   p({id:13,g:"닭 앞부분", n:"닭 앞부분", cut:"126 × 280", q:1,
@@ -402,7 +396,8 @@ function modelB(){
       ["고침","<b>닭 앞부분과 꼬리를 직접 그린 도형으로 바꿨습니다.</b> 볏·부리·턱벼슬이 한 몸이라 따로 붙일 것도, 어긋날 것도 없습니다."],
       ["고침","<b>장식판을 가운데 두고 양쪽 함이 뒷면을 거기에 붙입니다.</b> 서로 반대로 열려서 좌우 대칭이 됩니다. <span class='num'>12.5+70+15+70+12.5=180</span>."],
       ["고침","<b>뒷판을 없앴습니다.</b> 장식판이 양쪽 함의 뒷판 역할을 하므로 따로 만들 필요가 없습니다."],
-      ["고침","<b>함의 앞판이 정면(사용자 쪽)을 봅니다.</b> 포스트잇과 펜이 앞에서 보입니다."],
+      ["고침","<b>뚜껑 받침턱에도 투입구 구멍을 뚫었습니다.</b> 안 뚫으면 받침턱이 투입구를 막습니다."],
+      ["고침","<b>함의 앞판은 낮은 벽입니다.</b> 안에 든 것이 위와 바깥에서 보입니다."],
       ["고침","<b>옆판 가로 180 → 150</b> · <b>뚜껑 받침턱과 함 바닥판</b>을 새로 넣었습니다."],
       ["유지","본체 <span class='num'>240 × 180 × 230</span>, 타원 투입구 <span class='num'>120 × 45</span>, 함 옆판 <span class='num'>70</span>·앞판 <span class='num'>60/40</span> 은 손도면 그대로입니다."]
     ],
@@ -767,11 +762,11 @@ function select(m){
   ro.innerHTML='<div class="nm">'+p.n+(p.sub?' <span style="font-weight:400;color:var(--ink-2)">'+p.sub+'</span>':'')+'</div>'+
     '<div class="dm">'+(p.cut? p.cut+' × '+T+'T' : '참고용 모형')+'  ·  묶음: '+p.g+'</div>'+
     (p.chg?'<div class="nt">고침 — '+p.chg+'</div>':'');
-  markRow(p.id); markChip(p.g);
+  markRow(keyOf(p)); markChip(p.g);
 }
-function markRow(id){
+function markRow(k){
   [].forEach.call(document.querySelectorAll("#tb tr"),function(tr){
-    tr.classList.toggle("on", id!=null && tr.dataset.id===String(id));
+    tr.classList.toggle("on", k!=null && tr.dataset.k===k);
   });
 }
 function markChip(g){
@@ -801,20 +796,25 @@ function renderGroups(){
 }
 
 /* ---- 표 ---- */
+function keyOf(p){ return p.n + "|" + p.cut; }
 function renderTable(){
   var tb=document.getElementById("tb"); tb.innerHTML="";
-  var seen={};
-  model.parts.forEach(function(p){
+  var rows=[], at={};
+  model.parts.forEach(function(p){                 // 같은 이름·같은 치수는 한 줄로 합친다
     if(!p.q || !p.cut) return;
-    if(seen[p.id]) return; seen[p.id]=1;
-    var tr=document.createElement("tr"); tr.dataset.id=p.id;
-    tr.innerHTML='<td class="n">'+p.id+'</td><td>'+p.n+
-      (p.chg?'<span class="chg">고침 — '+p.chg+'</span>':'')+
-      (p.sub?'<span class="sub2">'+p.sub+'</span>':'')+
-      '</td><td class="n">'+p.cut+' × '+T+'</td><td class="q">'+p.q+'</td>';
+    var k=keyOf(p);
+    if(at[k]==null){ at[k]=rows.length; rows.push({k:k,n:p.n,cut:p.cut,q:0,chg:p.chg,sub:p.sub}); }
+    rows[at[k]].q += p.q;
+  });
+  rows.forEach(function(r,i){                      // 번호는 1부터 차례대로
+    var tr=document.createElement("tr"); tr.dataset.k=r.k;
+    tr.innerHTML='<td class="n">'+(i+1)+'</td><td>'+r.n+
+      (r.chg?'<span class="chg">고침 — '+r.chg+'</span>':'')+
+      (r.sub?'<span class="sub2">'+r.sub+'</span>':'')+
+      '</td><td class="n">'+r.cut+' × '+T+'</td><td class="q">'+r.q+'</td>';
     tr.onclick=function(){
       var m=null;
-      meshes.forEach(function(x){ if(!m && x.userData.p.id===p.id) m=x; });
+      meshes.forEach(function(x){ if(!m && keyOf(x.userData.p)===r.k) m=x; });
       select(m);
     };
     tb.appendChild(tr);
@@ -897,7 +897,10 @@ function tick(){
   requestAnimationFrame(tick);
 }
 
-resize(); build("A"); tick();
+resize();
+var startModel = (new URLSearchParams(location.search).get("m")==="B") ? "B" : "A";
+if(startModel==="B"){ tabs[0].setAttribute("aria-selected","false"); tabs[1].setAttribute("aria-selected","true"); }
+build(startModel); tick();
 document.getElementById("stamp").textContent="2026-09-15 작성";
 
 /* ---- 프레임 촬영용. 주소에 ?shot=1 이 붙었을 때만 돈다 ---- */
