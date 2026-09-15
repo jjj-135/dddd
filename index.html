@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="집성목 15mm로 만드는 닭 이야기상자와 서랍 2칸 수납장의 3D 도면과 재단 목록.">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="이야기상자와 서랍장">
+<meta property="og:description" content="집성목 15T 제작도면 · 3D로 돌려보고 부재 치수를 확인할 수 있습니다.">
+<style>
+  html{color-scheme:light dark}
+  body{margin:0;font:14px/1.5 system-ui,-apple-system,"Malgun Gothic",sans-serif;background:#faf9f7}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+<title>이야기상자와 서랍장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+  :root{
+    --paper:#F1EFE9; --surface:#FAF9F6; --surface-2:#E9E6DE;
+    --ink:#211F1B; --ink-2:#6B665C; --ink-3:#8F8A7E;
+    --rule:#D5D0C5; --rule-strong:#B9B2A3;
+    --accent:#1B6E68; --accent-soft:#DCEAE7; --accent-ink:#0E4E49;
+    --warn:#A24B1C; --warn-soft:#F3E3D6;
+    --wood:#D9B37E; --wood-dark:#A97C43;
+    --shadow:0 1px 2px rgba(33,31,27,.06), 0 8px 24px -12px rgba(33,31,27,.18);
+    --sans:"Noto Sans KR", system-ui, -apple-system, "Malgun Gothic", sans-serif;
+    --mono:"IBM Plex Mono", ui-monospace, "Consolas", monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#141613; --surface:#1C1F1B; --surface-2:#252923;
+      --ink:#E9E5DB; --ink-2:#9C978B; --ink-3:#7A756A;
+      --rule:#31352D; --rule-strong:#454A40;
+      --accent:#5CC2B6; --accent-soft:#1B3A36; --accent-ink:#8FDCD2;
+      --warn:#E09159; --warn-soft:#3A2717;
+      --wood:#C79A62; --wood-dark:#8A6132;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#141613; --surface:#1C1F1B; --surface-2:#252923;
+    --ink:#E9E5DB; --ink-2:#9C978B; --ink-3:#7A756A;
+    --rule:#31352D; --rule-strong:#454A40;
+    --accent:#5CC2B6; --accent-soft:#1B3A36; --accent-ink:#8FDCD2;
+    --warn:#E09159; --warn-soft:#3A2717;
+    --wood:#C79A62; --wood-dark:#8A6132;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -12px rgba(0,0,0,.7);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-size:15px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1500px; margin:0 auto; padding-inline:16px; padding-block:20px 48px}
+
+  /* ---------- masthead ---------- */
+  .mast{
+    display:flex; flex-wrap:wrap; align-items:flex-end; gap:16px 28px;
+    padding-bottom:14px; border-bottom:2px solid var(--ink);
+  }
+  .mast h1{
+    font-size:clamp(22px,3.4vw,32px); font-weight:900; letter-spacing:-.02em;
+    margin:0; text-wrap:balance;
+  }
+  .mast .sub{margin:2px 0 0; color:var(--ink-2); font-size:13.5px}
+  .spec{
+    margin-left:auto; display:flex; gap:0; border:1px solid var(--rule-strong);
+    border-radius:3px; overflow:hidden; background:var(--surface);
+  }
+  .spec div{padding:6px 12px; border-right:1px solid var(--rule)}
+  .spec div:last-child{border-right:0}
+  .spec b{display:block; font-family:var(--mono); font-size:14px; font-weight:600}
+  .spec span{display:block; font-size:10.5px; color:var(--ink-3); letter-spacing:.09em}
+
+  /* ---------- tabs ---------- */
+  .tabs{display:flex; gap:8px; margin:18px 0 0; flex-wrap:wrap}
+  .tab{
+    font-family:var(--sans); font-size:14px; font-weight:700; color:var(--ink-2);
+    background:var(--surface); border:1px solid var(--rule-strong);
+    border-radius:3px; padding:9px 16px; cursor:pointer; display:flex; gap:9px; align-items:center;
+  }
+  .tab .k{font-family:var(--mono); font-size:11px; font-weight:600;
+    background:var(--surface-2); color:var(--ink-3); padding:1px 6px; border-radius:2px}
+  .tab[aria-selected="true"]{
+    background:var(--accent); border-color:var(--accent); color:#fff;
+  }
+  .tab[aria-selected="true"] .k{background:rgba(255,255,255,.22); color:#fff}
+  .tab:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+  /* ---------- layout ---------- */
+  .stage{display:grid; grid-template-columns:minmax(0,1.55fr) minmax(300px,1fr); gap:20px; margin-top:16px}
+  @media (max-width:900px){ .stage{grid-template-columns:1fr} }
+
+  .viewer{
+    position:relative; background:var(--surface); border:1px solid var(--rule-strong);
+    border-radius:4px; overflow:hidden; box-shadow:var(--shadow);
+    aspect-ratio:4/3; max-width:100%;
+  }
+  @media (max-width:900px){ .viewer{aspect-ratio:1/1} }
+  #cv{display:block; width:100%; height:100%; touch-action:none; cursor:grab}
+  #cv:active{cursor:grabbing}
+
+  .hint{
+    position:absolute; left:12px; bottom:12px; font-size:11.5px; color:var(--ink-3);
+    background:color-mix(in srgb, var(--surface) 88%, transparent);
+    border:1px solid var(--rule); border-radius:3px; padding:4px 9px; pointer-events:none;
+  }
+  .lbl{
+    position:absolute; transform:translate(-50%,-50%); pointer-events:none;
+    font-family:var(--mono); font-size:11.5px; font-weight:600; color:#fff;
+    background:var(--accent); padding:1.5px 6px; border-radius:2px; white-space:nowrap;
+    box-shadow:0 1px 4px rgba(0,0,0,.25);
+  }
+  .readout{
+    position:absolute; left:12px; top:12px; max-width:62%;
+    background:color-mix(in srgb, var(--surface) 94%, transparent);
+    border:1px solid var(--rule-strong); border-left:3px solid var(--accent);
+    border-radius:3px; padding:8px 12px; pointer-events:none;
+  }
+  .readout .nm{font-weight:700; font-size:13.5px}
+  .readout .dm{font-family:var(--mono); font-size:12.5px; color:var(--ink-2); margin-top:1px}
+  .readout .nt{font-size:11.5px; color:var(--warn); margin-top:3px}
+
+  /* ---------- controls ---------- */
+  .ctl{
+    display:flex; flex-wrap:wrap; align-items:center; gap:10px 18px; margin-top:12px;
+    padding:11px 14px; background:var(--surface); border:1px solid var(--rule);
+    border-radius:4px;
+  }
+  .ctl label{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-2); font-weight:500}
+  .ctl input[type=range]{width:150px; accent-color:var(--accent)}
+  .ctl input[type=checkbox]{width:15px; height:15px; accent-color:var(--accent)}
+  .btn{
+    font:inherit; font-size:12.5px; font-weight:700; color:var(--ink);
+    background:var(--surface-2); border:1px solid var(--rule-strong);
+    border-radius:3px; padding:5px 11px; cursor:pointer;
+  }
+  .btn:hover{border-color:var(--accent); color:var(--accent)}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+
+  /* ---------- side ---------- */
+  .side{display:flex; flex-direction:column; gap:16px; min-width:0}
+  .card{background:var(--surface); border:1px solid var(--rule-strong); border-radius:4px; overflow:hidden}
+  .card > h2{
+    margin:0; font-size:11.5px; font-weight:700; letter-spacing:.11em; color:var(--ink-2);
+    padding:9px 14px; background:var(--surface-2); border-bottom:1px solid var(--rule);
+  }
+  .card .bd{padding:12px 14px}
+
+  .dims{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule)}
+  .dims div{background:var(--surface); padding:11px 12px}
+  .dims b{display:block; font-family:var(--mono); font-size:19px; font-weight:600; letter-spacing:-.02em}
+  .dims span{display:block; font-size:10.5px; color:var(--ink-3); letter-spacing:.09em; margin-top:1px}
+
+  table{width:100%; border-collapse:collapse; font-size:12.5px}
+  .tw{overflow-x:auto}
+  th{
+    text-align:left; font-size:10.5px; letter-spacing:.08em; color:var(--ink-3); font-weight:700;
+    padding:7px 10px; border-bottom:1px solid var(--rule-strong); white-space:nowrap;
+  }
+  td{padding:7px 10px; border-bottom:1px solid var(--rule); vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:var(--accent-soft)}
+  tbody tr.on{background:var(--accent-soft); box-shadow:inset 3px 0 0 var(--accent)}
+  td.n{font-family:var(--mono); white-space:nowrap; font-variant-numeric:tabular-nums}
+  td.q{font-family:var(--mono); text-align:right; white-space:nowrap}
+  .chg{color:var(--warn); font-size:11px; display:block}
+
+  .note{font-size:12.5px; color:var(--ink-2); margin:0 0 9px}
+  .note:last-child{margin-bottom:0}
+  .note b{color:var(--ink)}
+  .num{font-family:var(--mono); font-variant-numeric:tabular-nums}
+  ul.fix{margin:0; padding-left:17px; font-size:12.5px; color:var(--ink-2)}
+  ul.fix li{margin-bottom:7px}
+  ul.fix li:last-child{margin-bottom:0}
+  ul.fix b{color:var(--ink)}
+  .tag{
+    display:inline-block; font-family:var(--mono); font-size:10.5px; font-weight:600;
+    background:var(--warn-soft); color:var(--warn); padding:1px 5px; border-radius:2px; margin-right:5px;
+  }
+  .tag.ok{background:var(--accent-soft); color:var(--accent-ink)}
+  footer{margin-top:28px; padding-top:12px; border-top:1px solid var(--rule);
+    font-size:11.5px; color:var(--ink-3); display:flex; flex-wrap:wrap; gap:6px 18px}
+  @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important} }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <div class="mast">
+    <div>
+      <h1>이야기상자와 서랍장</h1>
+      <p class="sub">집성목 15T 제작도면 · 원본 손도면의 치수를 맞물리게 고친 판</p>
+    </div>
+    <div class="spec">
+      <div><b>15mm</b><span>집성목 두께</span></div>
+      <div><b>2440×1220</b><span>원판 1장</span></div>
+      <div><b id="usePct">–</b><span>원판 사용률</span></div>
+    </div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-A" aria-selected="true"><span class="k">A</span>서랍 2칸 수납장</button>
+    <button class="tab" role="tab" id="tab-B" aria-selected="false"><span class="k">B</span>닭 이야기상자</button>
+  </div>
+
+  <div class="stage">
+    <div>
+      <div class="viewer">
+        <canvas id="cv"></canvas>
+        <div class="readout" id="ro">
+          <div class="nm">부재를 누르면 치수가 나옵니다</div>
+          <div class="dm">끌어서 돌리기 · 휠로 확대 · 두 손가락으로 이동</div>
+        </div>
+        <div class="hint">단위 mm · 초록 치수선은 완성 바깥치수</div>
+      </div>
+      <div class="ctl">
+        <label>분해 <input type="range" id="ex" min="0" max="100" value="0"></label>
+        <label><input type="checkbox" id="cut"> 앞판 벗기기</label>
+        <label><input type="checkbox" id="dim" checked> 치수선</label>
+        <button class="btn" id="reset">시점 되돌리기</button>
+        <button class="btn" id="spin">자동 회전</button>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="card">
+        <h2>완성 바깥치수</h2>
+        <div class="dims" id="dims"></div>
+      </div>
+
+      <div class="card">
+        <h2 id="cutTitle">재단 목록</h2>
+        <div class="tw">
+          <table>
+            <thead><tr><th>번호</th><th>부재</th><th>가로 × 세로 × 두께</th><th>수량</th></tr></thead>
+            <tbody id="tb"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>원본에서 고친 것</h2>
+        <div class="bd"><ul class="fix" id="fixes"></ul></div>
+      </div>
+
+      <div class="card">
+        <h2>공방에 확인할 것</h2>
+        <div class="bd" id="asks"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>단위 mm · 판 두께 15T 기준</span>
+    <span>치수는 손도면 기준, 배치는 레퍼런스 도면을 따름</span>
+    <span id="stamp"></span>
+  <span><a href="도면_A_서랍수납장.png" style="color:var(--accent);font-weight:700">▸ 도면 A 보기 (PNG)</a></span><span><a href="도면_B_닭이야기상자.png" style="color:var(--accent);font-weight:700">▸ 도면 B 보기 (PNG)</a></span>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+var T = 15; // 집성목 두께
+
+/* ===================================================================
+   부재 정의.  치수를 바꾸려면 여기 숫자만 고치면 3D와 표가 같이 바뀝니다.
+   좌표: x=좌우(0이 왼쪽), y=높이(0이 바닥), z=앞뒤(0이 뒤, 큰 값이 앞)
+   =================================================================== */
+
+// ---------- A. 서랍 2칸 수납장 ----------
+function modelA(){
+  var W=300, H=225, D=130;      // 완성 바깥치수
+  var CD=100;                   // 몸통(뒷판·앞판 뺀) 깊이
+  var OW=270, OH=90;            // 앞판 구멍
+  var oy1=15, oy2=120;          // 구멍 아래끝 높이
+  var dw=266, dh=86, dd=95;     // 서랍 바깥치수 (구멍에 사방 2mm 여유)
+  var P=[];
+  function p(o){ P.push(o); return o; }
+
+  p({id:1,  n:"천판",     cut:"300 × 100", q:1, x:0,   y:H-T,   z:T,  w:W, h:T,   d:CD});
+  p({id:2,  n:"바닥판",   cut:"300 × 100", q:1, x:0,   y:0,     z:T,  w:W, h:T,   d:CD});
+  p({id:3,  n:"옆판",     cut:"100 × 195", q:2, x:0,   y:T,     z:T,  w:T, h:H-2*T, d:CD, chg:"높이 200 → 195"});
+  p({id:3,  n:"옆판",     cut:"100 × 195", q:0, x:W-T, y:T,     z:T,  w:T, h:H-2*T, d:CD});
+  p({id:4,  n:"중간판",   cut:"270 × 100", q:1, x:T,   y:105,   z:T,  w:OW, h:T,  d:CD, chg:"깊이 70 → 100"});
+  p({id:5,  n:"뒷판",     cut:"300 × 225", q:1, x:0,   y:0,     z:0,  w:W, h:H,   d:T,  chg:"세로 200 → 225"});
+  var front = p({id:6, n:"앞판", cut:"300 × 225", q:1, x:0, y:0, z:D-T, w:W, h:H, d:T,
+                 holes:[[T,oy1,OW,OH],[T,oy2,OW,OH]], front:true,
+                 chg:"세로 200 → 225 (구멍 두 개가 안 들어갔음)"});
+
+  // 서랍 두 벌
+  var names=["서랍 앞판","서랍 바닥판","서랍 옆판","서랍 뒷판"];
+  [[17,oy1+2,"아래"],[17,oy2+2,"위"]].forEach(function(s,k){
+    var bx=s[0], by=s[1], bz=D-dd;   // 앞면이 앞판 구멍에 맞물림
+    p({id:7, n:"서랍 앞판", cut:"266 × 86", q:k?0:2, x:bx, y:by, z:D-T, w:dw, h:dh, d:T,
+       sub:(k?"위":"아래")+" 서랍", knob:!k, burn:!!k});
+    p({id:8, n:"서랍 바닥판", cut:"266 × 80", q:k?0:2, x:bx, y:by, z:bz, w:dw, h:T, d:dd-T});
+    p({id:9, n:"서랍 옆판", cut:"80 × 71",  q:k?0:4, x:bx,        y:by+T, z:bz, w:T, h:dh-T, d:dd-T});
+    p({id:9, n:"서랍 옆판", cut:"80 × 71",  q:0,     x:bx+dw-T,   y:by+T, z:bz, w:T, h:dh-T, d:dd-T});
+    p({id:10,n:"서랍 뒷판", cut:"236 × 71", q:k?0:2, x:bx+T, y:by+T, z:bz, w:dw-2*T, h:dh-T, d:T});
+  });
+
+  return {
+    key:"A", title:"서랍 2칸 수납장", parts:P,
+    W:W, H:H, D:D, dims:[["가로",W],["높이",H],["깊이",D]],
+    fixes:[
+      ["고침","<b>앞판 세로 200 → 225.</b> 200으로는 구멍(90) 두 개에 여백 15씩을 더하면 가운데가 <span class='num'>−10mm</span>가 되어 물리적으로 안 들어갑니다. 바닥판·천판 두께를 안 더한 값으로 보입니다."],
+      ["고침","<b>뒷판 세로 200 → 225.</b> 앞판과 같이 맞췄습니다."],
+      ["고침","<b>옆판 높이 200 → 195.</b> 5mm만 줄이면 <span class='num'>15+90+15+90+15=225</span>로 모든 칸이 딱 떨어집니다."],
+      ["고침","<b>중간판 깊이 70 → 100.</b> 다른 판은 전부 100인데 혼자 70이었습니다."],
+      ["고침","<b>서랍을 266 × 86 × 95로 다시 짰습니다.</b> 원본은 앞판 60 / 옆판 100 / 구멍 90으로 높이가 셋 다 달랐고, 앞판 280이 구멍 270보다 커서 안 들어갔습니다."],
+      ["유지","구멍 <span class='num'>270 × 90</span>, 좌우 여백 <span class='num'>15</span>, 전체 폭 <span class='num'>300</span>, 깊이 <span class='num'>100</span> 은 손도면 그대로입니다."]
+    ],
+    asks:"<p class='note'><b>손잡이</b> — 서랍1은 손잡이, 서랍2는 버닝 글씨로 적혀 있습니다. 손잡이를 따로 사서 다는지, 앞판에 구멍을 파서 손을 거는지 정해야 합니다. 3D에는 나무 막대 손잡이로 그려뒀습니다.</p><p class='note'><b>버닝 글씨 문구</b>가 아직 안 정해졌습니다.</p><p class='note'><b>서랍 여유 2mm</b>로 잡았습니다. 공방에서 더 달라고 하면 구멍을 키우지 말고 서랍을 줄이는 쪽이 낫습니다.</p>"
+  };
+}
+
+// ---------- B. 닭 이야기상자 ----------
+function modelB(){
+  var W=240, H=230, D=180;      // 본체
+  var wallH=H-2*T;              // 200
+  var lidX=204, lidZ=144;       // 뚜껑 받침턱
+  var P=[];
+  function p(o){ P.push(o); return o; }
+
+  p({id:1, n:"아랫판", cut:"240 × 180", q:1, x:0, y:0, z:0, w:W, h:T, d:D});
+  p({id:2, n:"뒷판",   cut:"240 × 200", q:1, x:0, y:T, z:0, w:W, h:wallH, d:T});
+  p({id:3, n:"앞판",   cut:"240 × 200", q:1, x:0, y:T, z:D-T, w:W, h:wallH, d:T, front:true});
+  p({id:4, n:"옆판",   cut:"150 × 200", q:2, x:0,   y:T, z:T, w:T, h:wallH, d:D-2*T, chg:"가로 180 → 150"});
+  p({id:4, n:"옆판",   cut:"150 × 200", q:0, x:W-T, y:T, z:T, w:T, h:wallH, d:D-2*T});
+  p({id:5, n:"윗판(뚜껑)", cut:"240 × 180", q:1, x:0, y:H-T, z:0, w:W, h:T, d:D,
+     ellipse:[W/2, D/2, 120, 45], lid:true, sub:"타원 투입구 120 × 45"});
+  p({id:6, n:"뚜껑 받침턱", cut:"204 × 144", q:1, x:(W-lidX)/2, y:H-2*T, z:(D-lidZ)/2, w:lidX, h:T, d:lidZ,
+     lid:true, chg:"새로 넣음 — 뚜껑이 안 밀리게"});
+
+  // 좌측: 닭머리 장식판 + 포스트잇함
+  p({id:7, n:"닭머리 장식판", cut:"70 × 250", q:1, x:-T, y:0, z:55, w:T, h:250, d:100, silh:"head"});
+  var pz=60, pw=60;             // 포스트잇함: 깊이방향 안쪽 60
+  p({id:8, n:"포스트잇함 옆판", cut:"70 × 60~100", q:2, x:-T-70, y:0, z:pz,        w:70, h:100, d:T, curve:[60,100]});
+  p({id:8, n:"포스트잇함 옆판", cut:"70 × 60~100", q:0, x:-T-70, y:0, z:pz+pw+T,   w:70, h:100, d:T, curve:[60,100]});
+  p({id:9, n:"포스트잇함 바깥판", cut:"60 × 60", q:1, x:-T-70, y:0, z:pz+T, w:T, h:60, d:pw});
+  p({id:10,n:"포스트잇함 바닥판", cut:"60 × 55", q:1, x:-70, y:0, z:pz+T, w:70-T, h:T, d:pw, chg:"새로 넣음"});
+
+  // 우측: 필기도구함 + 꼬리 장식판
+  var qz=25, qw=40;
+  p({id:11,n:"필기도구함 옆판", cut:"70 × 100~120", q:2, x:W, y:0, z:qz,        w:70, h:120, d:T, curve:[120,100]});
+  p({id:11,n:"필기도구함 옆판", cut:"70 × 100~120", q:0, x:W, y:0, z:qz+qw+T,   w:70, h:120, d:T, curve:[120,100]});
+  p({id:12,n:"필기도구함 바깥판", cut:"40 × 100", q:1, x:W+70-T, y:0, z:qz+T, w:T, h:100, d:qw});
+  p({id:13,n:"필기도구함 바닥판", cut:"40 × 55", q:1, x:W, y:0, z:qz+T, w:70-T, h:T, d:qw, chg:"새로 넣음"});
+  p({id:14,n:"꼬리 장식판", cut:"60 × 80", q:1, x:W, y:150, z:110, w:T, h:80, d:60, silh:"tail",
+     chg:"붙이는 높이를 위쪽(150~230)으로"});
+
+  return {
+    key:"B", title:"닭 이야기상자", parts:P,
+    W:W, H:H, D:D, dims:[["본체 가로",W],["본체 높이",H],["본체 깊이",D]],
+    span:[-85, W+70],
+    fixes:[
+      ["고침","<b>옆판 가로 180 → 150.</b> 앞·뒷판 240과 옆판 180으로 네 벽을 짜면 겉이 240×210이 되는데 윗판·아랫판은 240×180이었습니다. 옆판을 150으로 줄이면 겉이 정확히 <span class='num'>240 × 180</span>이 됩니다."],
+      ["고침","<b>벽 높이를 200으로.</b> 겉높이 230 = 아랫판 15 + 벽 200 + 뚜껑 15."],
+      ["고침","<b>뚜껑 받침턱과 함 바닥판 3장을 새로 넣었습니다.</b> 원본에 없었는데 없으면 뚜껑이 밀리고 함 바닥이 뚫립니다."],
+      ["고침","<b>꼬리 장식판을 위쪽(150~230)에 붙입니다.</b> 높이 80짜리를 바닥부터 붙이면 앞에 선 필기도구함(120)에 완전히 가려집니다."],
+      ["유지","본체 <span class='num'>240 × 180 × 230</span>, 타원 투입구 <span class='num'>120 × 45</span>, 함 치수, 닭머리 <span class='num'>250</span> 은 손도면 그대로입니다."]
+    ],
+    asks:"<p class='note'><b>닭머리가 본체보다 20mm밖에 안 높습니다</b> (250 vs 230). 레퍼런스도 같은 비율이라 그대로 뒀는데, 닭처럼 보이게 하려면 <span class='num'>350~400</span>이 낫습니다.</p><p class='note'><b>포스트잇은 소형(51×38) 기준</b>입니다. 함 안쪽이 60×55라 일반 포스트잇(76×76)은 안 들어갑니다.</p><p class='note'><b>앞판에 글씨나 표시를 넣나요?</b> 레퍼런스는 앞판이 '이야기판'이었습니다. 이 도면에는 없어서 비워뒀습니다.</p><p class='note'><b>장식판 부착</b> — 닭머리판 위에 포스트잇함이 얹히는 구조입니다. 공방에 보강 방법을 물어보는 게 좋습니다.</p>"
+  };
+}
+
+var MODELS = {A:modelA(), B:modelB()};
+
+/* =================== three.js =================== */
+var cv=document.getElementById("cv"), viewer=cv.parentElement;
+var renderer=new THREE.WebGLRenderer({canvas:cv, antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+var scene=new THREE.Scene();
+var camera=new THREE.PerspectiveCamera(38,1,1,6000);
+var root=new THREE.Group(); scene.add(root);
+
+scene.add(new THREE.HemisphereLight(0xffffff,0x9a9384,0.85));
+var key=new THREE.DirectionalLight(0xffffff,0.72); key.position.set(-420,760,620); scene.add(key);
+var fill=new THREE.DirectionalLight(0xffffff,0.3); fill.position.set(520,240,-420); scene.add(fill);
+
+function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+var matFace, matEdge, matSel, lineMat, dimMat;
+function buildMats(){
+  var wood=new THREE.Color(css("--wood")||"#D9B37E");
+  var dark=new THREE.Color(css("--wood-dark")||"#A97C43");
+  var acc =new THREE.Color(css("--accent")||"#1B6E68");
+  matFace=new THREE.MeshLambertMaterial({color:wood});
+  matEdge=new THREE.MeshLambertMaterial({color:dark});
+  matSel =new THREE.MeshLambertMaterial({color:acc});
+  lineMat=new THREE.LineBasicMaterial({color:dark, transparent:true, opacity:.55});
+  dimMat =new THREE.LineBasicMaterial({color:acc});
+}
+buildMats();
+
+/* ---- 실루엣(닭머리·꼬리) ---- */
+function headShape(){
+  var pts=[[15,0],[85,0],[100,58],[95,128],[76,172],[72,196],[80,212],[70,231],[62,221],[54,238],[46,223],[38,231],
+           [30,214],[22,199],[10,191],[24,183],[31,168],[35,148],[21,108],[8,58]];
+  return polyShape(pts, 100, 250);
+}
+function tailShape(){
+  var pts=[[0,0],[50,0],[58,28],[50,44],[57,58],[44,69],[49,80],[34,71],[29,54],[17,38],[6,17]];
+  return polyShape(pts, 60, 80);
+}
+function polyShape(pts, tw, th){
+  var xs=pts.map(function(p){return p[0]}), ys=pts.map(function(p){return p[1]});
+  var x0=Math.min.apply(null,xs), x1=Math.max.apply(null,xs);
+  var y0=Math.min.apply(null,ys), y1=Math.max.apply(null,ys);
+  var sx=tw/(x1-x0), sy=th/(y1-y0);
+  var s=new THREE.Shape();
+  pts.forEach(function(p,i){
+    var X=(p[0]-x0)*sx, Y=(p[1]-y0)*sy;
+    if(i===0) s.moveTo(X,Y); else s.lineTo(X,Y);
+  });
+  s.closePath(); return s;
+}
+
+/* ---- 부재 → 메쉬 ---- */
+function geomFor(p){
+  if(p.silh){
+    var sh = p.silh==="head" ? headShape() : tailShape();
+    var g=new THREE.ExtrudeGeometry(sh,{depth:T,bevelEnabled:false});
+    g.rotateY(-Math.PI/2);                // 실루엣 면이 좌우를 보게
+    g.translate(T,0,0);
+    return g;
+  }
+  if(p.curve){                            // 윗변이 한쪽으로 올라가는 곡선 판
+    var h0=p.curve[0], h1=p.curve[1], L=p.w, top=Math.max(h0,h1), s=new THREE.Shape();
+    s.moveTo(0,0); s.lineTo(L,0); s.lineTo(L,h1);
+    s.quadraticCurveTo(L*0.5, top*1.06, 0, h0);
+    s.closePath();
+    return new THREE.ExtrudeGeometry(s,{depth:T,bevelEnabled:false});
+  }
+  if(p.holes || p.ellipse){
+    var sp=new THREE.Shape();
+    sp.moveTo(0,0); sp.lineTo(p.w,0); sp.lineTo(p.w,p.holes?p.h:p.d); sp.lineTo(0,p.holes?p.h:p.d); sp.closePath();
+    if(p.holes) p.holes.forEach(function(h){
+      var hp=new THREE.Path();
+      hp.moveTo(h[0],h[1]); hp.lineTo(h[0]+h[2],h[1]); hp.lineTo(h[0]+h[2],h[1]+h[3]); hp.lineTo(h[0],h[1]+h[3]); hp.closePath();
+      sp.holes.push(hp);
+    });
+    if(p.ellipse){
+      var e=p.ellipse, ep=new THREE.Path();
+      ep.absellipse(e[0], e[1], e[2]/2, e[3]/2, 0, Math.PI*2, false, 0);
+      sp.holes.push(ep);
+    }
+    var g3=new THREE.ExtrudeGeometry(sp,{depth:T,bevelEnabled:false});
+    if(p.ellipse){ g3.rotateX(-Math.PI/2); g3.translate(0,0,p.d); }  // 눕혀서 상판으로
+    return g3;
+  }
+  var g4=new THREE.BoxGeometry(p.w,p.h,p.d);
+  g4.translate(p.w/2,p.h/2,p.d/2);
+  return g4;
+}
+
+var meshes=[], labels=[], dimGroup=null, model=null, spinning=false;
+
+function clearRoot(){
+  while(root.children.length) root.remove(root.children[0]);
+  meshes=[]; labels.forEach(function(l){l.el.remove()}); labels=[];
+}
+
+function build(key){
+  clearRoot();
+  model=MODELS[key];
+  var cx=(model.span?(model.span[0]+model.span[1])/2:model.W/2);
+  var ctr=new THREE.Vector3(cx, model.H/2, model.D/2);
+
+  model.parts.forEach(function(p,i){
+    var m=new THREE.Mesh(geomFor(p), matFace.clone());
+    m.position.set(p.x,p.y,p.z);
+    m.updateMatrixWorld(true);
+    var box=new THREE.Box3().setFromObject(m);
+    var c=box.getCenter(new THREE.Vector3());
+    var sz=box.getSize(new THREE.Vector3());
+    // 가장 얇은 축 방향으로 분해
+    var ax = sz.x<=sz.y && sz.x<=sz.z ? "x" : (sz.y<=sz.z ? "y" : "z");
+    var dir=new THREE.Vector3();
+    dir[ax] = (c[ax]-ctr[ax])>=0 ? 1 : -1;
+    if(Math.abs(c[ax]-ctr[ax])<1) dir[ax]= (i%2?1:-1);
+    m.userData={p:p, home:m.position.clone(), dir:dir};
+    var eg=new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry,28), lineMat);
+    m.add(eg);
+    root.add(m); meshes.push(m);
+  });
+
+  // 치수선
+  dimGroup=new THREE.Group(); root.add(dimGroup);
+  var x0=model.span?model.span[0]:0, x1=model.span?model.span[1]:model.W;
+  addDim([x0,-34,model.D],[x1,-34,model.D], (x1-x0)+"", "가로");
+  addDim([x1+34,0,model.D],[x1+34,model.H,model.D], model.H+"", "높이");
+  addDim([x1+34,-34,0],[x1+34,-34,model.D], model.D+"", "깊이");
+
+  root.position.set(-ctr.x,-ctr.y,-ctr.z);
+  fitCamera();
+  renderTable(); renderSide();
+}
+
+function addDim(a,b,txt,role){
+  var A=new THREE.Vector3(a[0],a[1],a[2]), B=new THREE.Vector3(b[0],b[1],b[2]);
+  var g=new THREE.BufferGeometry().setFromPoints([A,B]);
+  dimGroup.add(new THREE.Line(g,dimMat));
+  var el=document.createElement("div"); el.className="lbl"; el.textContent=txt;
+  viewer.appendChild(el);
+  labels.push({el:el, v:A.clone().lerp(B,.5)});
+}
+
+/* ---- 카메라 / 조작 ---- */
+var yaw=-0.72, pitch=0.44, dist=760, pan=new THREE.Vector3();
+function fitCamera(){
+  var span=model.span?(model.span[1]-model.span[0]):model.W;
+  dist=Math.max(span, model.H, model.D)*2.35;
+  yaw=-0.72; pitch=0.42; pan.set(0,0,0);
+}
+function updateCam(){
+  var t=new THREE.Vector3(0,0,0).add(pan);
+  camera.position.set(
+    t.x+dist*Math.cos(pitch)*Math.sin(yaw),
+    t.y+dist*Math.sin(pitch),
+    t.z+dist*Math.cos(pitch)*Math.cos(yaw)
+  );
+  camera.lookAt(t);
+}
+var drag=null;
+cv.addEventListener("pointerdown",function(e){
+  cv.setPointerCapture(e.pointerId);
+  drag={x:e.clientX,y:e.clientY,shift:e.shiftKey||e.button===1,moved:0};
+});
+cv.addEventListener("pointermove",function(e){
+  if(!drag) return;
+  var dx=e.clientX-drag.x, dy=e.clientY-drag.y;
+  drag.moved+=Math.abs(dx)+Math.abs(dy);
+  if(drag.shift){
+    var k=dist*0.0016;
+    pan.x-=dx*k*Math.cos(yaw); pan.z+=dx*k*Math.sin(yaw); pan.y+=dy*k;
+  }else{
+    yaw-=dx*0.008; pitch=Math.max(-1.35,Math.min(1.35,pitch+dy*0.008));
+  }
+  drag.x=e.clientX; drag.y=e.clientY; spinning=false;
+});
+cv.addEventListener("pointerup",function(e){
+  if(drag && drag.moved<5) pick(e);
+  drag=null;
+});
+cv.addEventListener("wheel",function(e){
+  e.preventDefault();
+  dist=Math.max(140,Math.min(3200,dist*(1+Math.sign(e.deltaY)*0.11)));
+},{passive:false});
+
+/* ---- 선택 ---- */
+var ray=new THREE.Raycaster(), sel=null;
+function pick(e){
+  var r=cv.getBoundingClientRect();
+  var v=new THREE.Vector2(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(v,camera);
+  var hit=ray.intersectObjects(meshes,false);
+  select(hit.length?hit[0].object:null);
+}
+function select(m){
+  meshes.forEach(function(x){ x.material.color.copy(matFace.color); });
+  sel=m;
+  var ro=document.getElementById("ro");
+  if(!m){
+    ro.innerHTML='<div class="nm">부재를 누르면 치수가 나옵니다</div><div class="dm">끌어서 돌리기 · 휠로 확대 · Shift+끌기로 이동</div>';
+    markRow(null); return;
+  }
+  m.material.color.copy(matSel.color);
+  var p=m.userData.p;
+  ro.innerHTML='<div class="nm">'+p.n+(p.sub?' <span style="font-weight:400;color:var(--ink-2)">'+p.sub+'</span>':'')+'</div>'+
+    '<div class="dm">'+p.cut+' × '+T+'T</div>'+
+    (p.chg?'<div class="nt">고침 — '+p.chg+'</div>':'');
+  markRow(p.id);
+}
+function markRow(id){
+  [].forEach.call(document.querySelectorAll("#tb tr"),function(tr){
+    tr.classList.toggle("on", id!==null && tr.dataset.id===String(id));
+  });
+}
+
+/* ---- 표 / 사이드 ---- */
+function renderTable(){
+  var tb=document.getElementById("tb"); tb.innerHTML="";
+  var seen={};
+  model.parts.forEach(function(p){
+    if(!p.q) return;
+    if(seen[p.id]) return; seen[p.id]=1;
+    var tr=document.createElement("tr"); tr.dataset.id=p.id;
+    tr.innerHTML='<td class="n">'+p.id+'</td><td>'+p.n+
+      (p.chg?'<span class="chg">고침 — '+p.chg+'</span>':'')+
+      (p.sub?'<span class="chg" style="color:var(--ink-3)">'+p.sub+'</span>':'')+
+      '</td><td class="n">'+p.cut+' × '+T+'</td><td class="q">'+p.q+'</td>';
+    tr.onclick=function(){
+      var m=null;
+      meshes.forEach(function(x){ if(!m && x.userData.p.id===p.id) m=x; });
+      select(m);
+    };
+    tb.appendChild(tr);
+  });
+  document.getElementById("cutTitle").textContent="재단 목록 · "+model.title;
+
+  var d=document.getElementById("dims");
+  d.innerHTML=model.dims.map(function(x){
+    return '<div><b>'+x[1]+'</b><span>'+x[0]+' mm</span></div>';
+  }).join("");
+}
+function renderSide(){
+  document.getElementById("fixes").innerHTML=model.fixes.map(function(f){
+    return '<li><span class="tag'+(f[0]==="유지"?" ok":"")+'">'+f[0]+'</span>'+f[1]+'</li>';
+  }).join("");
+  document.getElementById("asks").innerHTML=model.asks;
+}
+
+/* ---- 원판 사용률 ---- */
+(function(){
+  var area=0;
+  ["A","B"].forEach(function(k){
+    MODELS[k].parts.forEach(function(p){
+      if(!p.q) return;
+      var m=p.cut.split("×").map(function(s){return parseFloat(s)});
+      if(m.length>=2 && !isNaN(m[0]) && !isNaN(m[1])) area+=m[0]*m[1]*p.q;
+    });
+  });
+  document.getElementById("usePct").textContent=Math.round(area/(2440*1220)*100)+"%";
+})();
+
+/* ---- 컨트롤 ---- */
+var exR=document.getElementById("ex"), cutC=document.getElementById("cut"), dimC=document.getElementById("dim");
+exR.oninput=function(){ applyExplode(); };
+cutC.onchange=function(){
+  meshes.forEach(function(m){ if(m.userData.p.front) m.visible=!cutC.checked; });
+};
+dimC.onchange=function(){
+  dimGroup.visible=dimC.checked;
+  labels.forEach(function(l){ l.el.style.display=dimC.checked?"":"none"; });
+};
+function applyExplode(){
+  var t=exR.value/100;
+  meshes.forEach(function(m){
+    var u=m.userData;
+    m.position.copy(u.home).addScaledVector(u.dir, t*150);
+  });
+}
+document.getElementById("reset").onclick=function(){ fitCamera(); exR.value=0; applyExplode(); select(null); spinning=false; };
+document.getElementById("spin").onclick=function(){ spinning=!spinning; };
+
+var tabs=[document.getElementById("tab-A"),document.getElementById("tab-B")];
+tabs.forEach(function(t,i){
+  t.onclick=function(){
+    tabs.forEach(function(x,j){ x.setAttribute("aria-selected", j===i?"true":"false"); });
+    exR.value=0; cutC.checked=false; select(null);
+    build(i?"B":"A");
+    dimGroup.visible=dimC.checked;
+  };
+});
+
+/* ---- 루프 ---- */
+function resize(){
+  var w=viewer.clientWidth, h=viewer.clientHeight;
+  renderer.setSize(w,h,false);
+  camera.aspect=w/h; camera.updateProjectionMatrix();
+}
+addEventListener("resize",resize);
+var pv=new THREE.Vector3();
+function tick(){
+  if(spinning) yaw-=0.004;
+  updateCam();
+  renderer.render(scene,camera);
+  var r=viewer.getBoundingClientRect();
+  labels.forEach(function(l){
+    pv.copy(l.v).add(root.position).project(camera);
+    l.el.style.left=((pv.x*0.5+0.5)*r.width)+"px";
+    l.el.style.top=((-pv.y*0.5+0.5)*r.height)+"px";
+    l.el.style.opacity = pv.z<1 ? "1" : "0";
+  });
+  requestAnimationFrame(tick);
+}
+
+resize(); build("A"); tick();
+document.getElementById("stamp").textContent="2026-09-15 작성";
+addEventListener("resize",function(){ setTimeout(resize,60); });
+
+/* ---- 프레임 촬영용. 주소에 ?shot=1 이 붙었을 때만 돈다 (영상 만들 때) ---- */
+(function(){
+  var q=new URLSearchParams(location.search);
+  if(q.get("shot")!=="1") return;
+  document.documentElement.dataset.theme=q.get("theme")||"light";
+  document.documentElement.style.background="var(--surface)";
+  document.body.style.background="var(--surface)";
+  document.querySelector(".wrap").style.cssText="max-width:none;padding:0;margin:0";
+  [".mast",".tabs",".side",".ctl","footer",".hint",".readout"].forEach(function(sel){
+    var el=document.querySelector(sel); if(el) el.style.display="none";
+  });
+  var v=document.querySelector(".viewer");
+  v.style.cssText="position:fixed;inset:0;border:0;border-radius:0;box-shadow:none;"+
+                  "aspect-ratio:auto;background:var(--surface)";
+  build(q.get("m")||"A");
+  exR.value=q.get("ex")||0; applyExplode();
+  var showDim=q.get("dim")!=="0";
+  dimGroup.visible=showDim;
+  labels.forEach(function(l){ l.el.style.display=showDim?"":"none"; });
+  yaw=parseFloat(q.get("yaw")||"-0.72");
+  pitch=parseFloat(q.get("pitch")||"0.40");
+  if(q.get("zoom")) dist*=parseFloat(q.get("zoom"));
+  resize();
+})();
+})();
+</script>
+
+</body>
+</html>
