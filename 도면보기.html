@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=6, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>도면 보기 — 이야기상자와 서랍장</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+  :root{
+    --paper:#F1EFE9; --surface:#FAF9F6; --surface-2:#E9E6DE;
+    --ink:#211F1B; --ink-2:#6B665C;
+    --rule:#D5D0C5; --rule-strong:#B9B2A3;
+    --accent:#1B6E68; --accent-soft:#DCEAE7; --warn:#A24B1C; --warn-soft:#F6E7DC;
+    --sans:"Noto Sans KR", system-ui, -apple-system, "Malgun Gothic", sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#141613; --surface:#1C1F1B; --surface-2:#252923;
+      --ink:#E9E5DB; --ink-2:#9C978B;
+      --rule:#31352D; --rule-strong:#454A40;
+      --accent:#5CC2B6; --accent-soft:#1B3A36; --warn:#E09159; --warn-soft:#3A2717;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#141613; --surface:#1C1F1B; --surface-2:#252923;
+    --ink:#E9E5DB; --ink-2:#9C978B;
+    --rule:#31352D; --rule-strong:#454A40;
+    --accent:#5CC2B6; --accent-soft:#1B3A36; --warn:#E09159; --warn-soft:#3A2717;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-size:15px; -webkit-font-smoothing:antialiased}
+
+  header{position:sticky; top:0; z-index:10; background:var(--surface);
+    border-bottom:1px solid var(--rule); padding:10px 14px 11px;
+    padding-inline:max(14px, env(safe-area-inset-left,0px));
+    box-shadow:0 1px 10px rgba(0,0,0,.05)}
+  .bar{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+  .back{display:inline-flex; align-items:center; gap:7px; flex:0 0 auto;
+    background:var(--accent); color:#fff; text-decoration:none;
+    font-weight:700; font-size:15px; border:0; cursor:pointer;
+    border-radius:9px; padding:11px 16px; line-height:1}
+  .back:active{filter:brightness(.92)}
+  .ttl{font-weight:700; font-size:15px; flex:1 1 auto;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .tabs{display:flex; gap:7px; overflow-x:auto; margin-top:9px;
+    padding-bottom:2px; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto; border:1px solid var(--rule-strong); background:var(--surface-2);
+    color:var(--ink-2); font:inherit; font-size:13px; font-weight:700;
+    border-radius:8px; padding:9px 13px; cursor:pointer; white-space:nowrap}
+  .tab[aria-selected="true"]{background:var(--accent-soft); color:var(--accent);
+    border-color:var(--accent)}
+
+  /* 두께 조절 */
+  .tk{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:10px;
+    padding-top:10px; border-top:1px solid var(--rule)}
+  .tk .lb{font-weight:700; font-size:13px}
+  .tk input[type=range]{flex:1 1 150px; min-width:120px; accent-color:var(--accent)}
+  .tk .val{font-weight:700; color:var(--accent); min-width:56px; text-align:right;
+    font-variant-numeric:tabular-nums}
+  .tk .ps{display:flex; gap:6px}
+  .tk .ps button{border:1px solid var(--rule-strong); background:var(--surface-2);
+    color:var(--ink-2); font:inherit; font-size:12px; font-weight:700;
+    border-radius:7px; padding:7px 10px; cursor:pointer}
+  .tk .ps button.on{background:var(--accent-soft); color:var(--accent); border-color:var(--accent)}
+
+  main{padding:14px; padding-inline:max(14px, env(safe-area-inset-left,0px))}
+  .note{margin:0 2px 10px; font-size:12.5px; color:var(--ink-2); line-height:1.6}
+  .note b{color:var(--warn)}
+  .stage{position:relative; background:#fff; border:1px solid var(--rule);
+    border-radius:12px; overflow:auto; -webkit-overflow-scrolling:touch}
+  .inner{position:relative; width:100%; margin:0 auto}
+  .stage.zoom .inner{width:auto}
+  .inner img{display:block; width:100%; height:auto; touch-action:pinch-zoom}
+  .stage.zoom .inner img{width:auto; max-width:none}
+  .inner svg{position:absolute; left:0; top:0; width:100%; height:100%;
+    pointer-events:none}
+  .row{display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    margin:12px 2px 30px; color:var(--ink-2); font-size:13px}
+  .btn{border:1px solid var(--rule-strong); background:var(--surface);
+    color:var(--ink); font:inherit; font-size:13px; font-weight:700;
+    border-radius:8px; padding:9px 13px; cursor:pointer; text-decoration:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <a class="back" href="./">◂ 3D 화면으로</a>
+    <span class="ttl" id="ttl">도면</span>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="tk">
+    <span class="lb">판 두께</span>
+    <input type="range" id="tk" min="9" max="25" step="0.5" value="15">
+    <span class="val" id="tkv">15mm</span>
+    <span class="ps" id="tkp"></span>
+  </div>
+</header>
+
+<main>
+  <p class="note" id="note"></p>
+  <div class="stage" id="stage">
+    <div class="inner" id="inner">
+      <img id="img" alt="도면">
+      <svg id="ov" preserveAspectRatio="none"></svg>
+    </div>
+  </div>
+  <div class="row">
+    <button class="btn" id="zoom" type="button">원본 크기로 보기</button>
+    <a class="btn" id="raw" href="#" target="_blank" rel="noopener">새 탭에서 그림만 열기</a>
+    <span id="hint"></span>
+  </div>
+</main>
+
+<script>
+/* 도면 네 장. 주소 뒤에 ?p=a1 처럼 붙여서 고른다 */
+var SHEETS = [
+  {k:"a1", t:"서랍장 · 1장 조립도 · 부재도",     f:"도면_A_서랍수납장.png",          tab:"서랍장 1장"},
+  {k:"a2", t:"서랍장 · 2장 여섯 방향 치수도",     f:"도면_A_서랍수납장_6면치수.png",   tab:"서랍장 2장"},
+  {k:"b1", t:"이야기상자 · 1장 조립도 · 부재도",  f:"도면_B_닭이야기상자.png",         tab:"이야기상자 1장"},
+  {k:"b2", t:"이야기상자 · 2장 여섯 방향 치수도", f:"도면_B_닭이야기상자_6면치수.png", tab:"이야기상자 2장"}
+];
+var DIM_DATA = {"a1":{"w":3600,"h":2398,"nums":[{"x":1716.0,"y":508.1,"r":0,"fs":17,"bw":40,"bh":24,"a":300.0,"b":0},{"x":1356.1,"y":384.0,"r":-90,"fs":17,"bw":27,"bh":38,"a":130.0,"b":-2},{"x":2472.0,"y":508.1,"r":0,"fs":17,"bw":40,"bh":24,"a":300.0,"b":0},{"x":2112.1,"y":384.0,"r":-90,"fs":17,"bw":27,"bh":38,"a":130.0,"b":-2},{"x":3020.0,"y":705.7,"r":0,"fs":17,"bw":40,"bh":24,"a":130.0,"b":-2},{"x":2868.1,"y":482.8,"r":-90,"fs":17,"bw":27,"bh":38,"a":225.0,"b":-2},{"x":1684.8,"y":1105.7,"r":0,"fs":17,"bw":40,"bh":24,"a":300.0,"b":-2},{"x":1356.1,"y":981.6,"r":-90,"fs":17,"bw":27,"bh":38,"a":130.0,"b":-2},{"x":2409.6,"y":1365.7,"r":0,"fs":17,"bw":40,"bh":24,"a":300.0,"b":0},{"x":2049.7,"y":1111.6,"r":-90,"fs":17,"bw":27,"bh":38,"a":225.0,"b":0},{"x":3165.6,"y":1144.1,"r":0,"fs":16,"bw":37,"bh":23,"a":300.0,"b":-2},{"x":2905.7,"y":1220.8,"r":-90,"fs":16,"bw":26,"bh":26,"a":112.5,"b":-1.5},{"x":3165.6,"y":925.7,"r":0,"fs":16,"bw":37,"bh":23,"a":300.0,"b":-2},{"x":2905.7,"y":1002.4,"r":-90,"fs":16,"bw":26,"bh":26,"a":112.5,"b":-1.5},{"x":2869.2,"y":1396.9,"r":0,"fs":17,"bw":30,"bh":24,"a":0.0,"b":1},{"x":3165.6,"y":1365.7,"r":0,"fs":17,"bw":40,"bh":24,"a":300.0,"b":-2},{"x":3462.0,"y":1396.9,"r":0,"fs":17,"bw":30,"bh":24,"a":0.0,"b":1},{"x":2802.3,"y":1330.0,"r":-90,"fs":17,"bw":27,"bh":28,"a":0.0,"b":1},{"x":2805.7,"y":1220.8,"r":-90,"fs":17,"bw":27,"bh":28,"a":112.5,"b":-1.5},{"x":2802.3,"y":1111.6,"r":-90,"fs":17,"bw":27,"bh":28,"a":0.0,"b":1.0},{"x":2805.7,"y":1002.4,"r":-90,"fs":17,"bw":27,"bh":28,"a":112.5,"b":-1.5},{"x":2802.3,"y":893.2,"r":-90,"fs":17,"bw":27,"bh":28,"a":0.0,"b":1.0},{"x":1680.6,"y":1802.5,"r":0,"fs":17,"bw":40,"bh":24,"a":296.0,"b":-2},{"x":1356.1,"y":1693.0,"r":-90,"fs":17,"bw":27,"bh":28,"a":108.5,"b":-1.5},{"x":2365.9,"y":1790.1,"r":0,"fs":17,"bw":40,"bh":24,"a":296.0,"b":-2},{"x":2041.3,"y":1686.8,"r":-90,"fs":17,"bw":27,"bh":28,"a":110.0,"b":-2},{"x":2857.8,"y":1771.3,"r":0,"fs":17,"bw":30,"bh":24,"a":110.0,"b":-2},{"x":2726.6,"y":1677.4,"r":-90,"fs":17,"bw":27,"bh":28,"a":108.5,"b":-2.5},{"x":1649.4,"y":2142.2,"r":0,"fs":17,"bw":40,"bh":24,"a":296.0,"b":-4},{"x":1356.1,"y":2048.3,"r":-90,"fs":17,"bw":27,"bh":28,"a":108.5,"b":-2.5},{"x":2089.3,"y":2027.8,"r":0,"fs":17,"bw":30,"bh":24,"a":60.0,"b":0},{"x":1975.5,"y":1991.1,"r":-90,"fs":17,"bw":27,"bh":28,"a":16.0,"b":0}],"texts":[{"x":70,"y":84,"fs":16,"an":"start","bg":"#F3F1EC","bw":775,"bh":24,"col":"ink2","dec":2,"tpl":"집성목 {T}T · 단위 mm · 부재 18 장 · 나무 쓰는 넓이 약 {0} m²   (집성목 한 판 2440 × 1220 = 2.98 m²)","v":[[0.542,-0.009]]},{"x":1356,"y":802,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[300.0,0],[130.0,-2]]},{"x":2112,"y":802,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[300.0,0],[130.0,-2]]},{"x":2868,"y":802,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   2개","v":[[130.0,-2],[225.0,-2]]},{"x":1356,"y":1462,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[300.0,-2],[130.0,-2]]},{"x":2050,"y":1462,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[300.0,0],[225.0,0]]},{"x":2806,"y":1462,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[300.0,0],[225.0,0]]},{"x":1356,"y":1898,"fs":14,"an":"start","bw":148,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   2개","v":[[296.0,-2],[108.5,-1.5]]},{"x":2041,"y":1898,"fs":14,"an":"start","bw":148,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   2개","v":[[296.0,-2],[110.0,-2]]},{"x":2727,"y":1898,"fs":14,"an":"start","bw":140,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   4개","v":[[110.0,-2],[108.5,-2.5]]},{"x":1356,"y":2238,"fs":14,"an":"start","bw":148,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   2개","v":[[296.0,-4],[108.5,-2.5]]},{"x":1979,"y":2238,"fs":14,"an":"start","bw":140,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[60.0,0],[16.0,0]]}]},"a2":{"w":3600,"h":2394,"nums":[{"x":770.8,"y":663.4,"r":0,"fs":18,"bw":40,"bh":26,"a":300.0,"b":-2.0},{"x":310.5,"y":808.0,"r":-90,"fs":18,"bw":28,"bh":28,"a":112.5,"b":-1.5},{"x":770.8,"y":290.5,"r":0,"fs":18,"bw":40,"bh":26,"a":300.0,"b":-2.0},{"x":310.5,"y":435.1,"r":-90,"fs":18,"bw":28,"bh":28,"a":112.5,"b":-1.5},{"x":264.6,"y":1055.5,"r":0,"fs":19,"bw":32,"bh":27,"a":0.0,"b":1.0},{"x":770.8,"y":1055.5,"r":0,"fs":19,"bw":43,"bh":27,"a":300.0,"b":-2.0},{"x":1276.9,"y":1055.5,"r":0,"fs":19,"bw":32,"bh":27,"a":0.0,"b":1.0},{"x":451.1,"y":1119.5,"r":0,"fs":19,"bw":43,"bh":27,"a":120.0,"b":0.0},{"x":770.8,"y":1119.5,"r":0,"fs":19,"bw":32,"bh":27,"a":60.0,"b":0.0},{"x":1090.4,"y":1119.5,"r":0,"fs":19,"bw":43,"bh":27,"a":120.0,"b":0.0},{"x":770.8,"y":1183.5,"r":0,"fs":19,"bw":43,"bh":27,"a":300.0,"b":0.0},{"x":172.4,"y":994.5,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":172.4,"y":808.0,"r":-90,"fs":19,"bw":29,"bh":30,"a":112.5,"b":-1.5},{"x":172.4,"y":621.6,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":172.4,"y":435.1,"r":-90,"fs":19,"bw":29,"bh":30,"a":112.5,"b":-1.5},{"x":172.4,"y":248.6,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":104.4,"y":621.6,"r":-90,"fs":19,"bw":29,"bh":41,"a":225.0,"b":0.0},{"x":1337.9,"y":928.8,"r":-90,"fs":19,"bw":29,"bh":30,"a":48.25,"b":0.25},{"x":1337.9,"y":808.0,"r":-90,"fs":19,"bw":29,"bh":30,"a":16.0,"b":0.0},{"x":1638.1,"y":1055.5,"r":0,"fs":19,"bw":32,"bh":27,"a":0.0,"b":1.0},{"x":1842.4,"y":1055.5,"r":0,"fs":19,"bw":43,"bh":27,"a":130.0,"b":-2.0},{"x":2046.6,"y":1055.5,"r":0,"fs":19,"bw":32,"bh":27,"a":0.0,"b":1.0},{"x":1842.4,"y":1119.5,"r":0,"fs":19,"bw":43,"bh":27,"a":130.0,"b":0.0},{"x":1869.0,"y":1183.5,"r":0,"fs":19,"bw":43,"bh":27,"a":130.0,"b":1.0},{"x":1545.9,"y":994.5,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":1545.9,"y":808.0,"r":-90,"fs":19,"bw":29,"bh":30,"a":112.5,"b":-1.5},{"x":1545.9,"y":621.6,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":1545.9,"y":435.1,"r":-90,"fs":19,"bw":29,"bh":30,"a":112.5,"b":-1.5},{"x":1545.9,"y":248.6,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":1477.9,"y":621.6,"r":-90,"fs":19,"bw":29,"bh":41,"a":225.0,"b":0.0},{"x":2160.9,"y":928.8,"r":-90,"fs":19,"bw":29,"bh":30,"a":48.25,"b":0.25},{"x":2160.9,"y":808.0,"r":-90,"fs":19,"bw":29,"bh":30,"a":16.0,"b":0.0},{"x":2647.6,"y":945.5,"r":0,"fs":19,"bw":43,"bh":27,"a":120.0,"b":0.0},{"x":2967.2,"y":945.5,"r":0,"fs":19,"bw":32,"bh":27,"a":60.0,"b":0.0},{"x":3286.9,"y":945.5,"r":0,"fs":19,"bw":43,"bh":27,"a":120.0,"b":0.0},{"x":2967.2,"y":1009.5,"r":0,"fs":19,"bw":43,"bh":27,"a":300.0,"b":0.0},{"x":2368.9,"y":422.7,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":2368.9,"y":626.9,"r":-90,"fs":19,"bw":29,"bh":41,"a":130.0,"b":-2.0},{"x":2368.9,"y":831.1,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":2300.9,"y":653.6,"r":-90,"fs":19,"bw":29,"bh":41,"a":130.0,"b":1.0},{"x":771.8,"y":2226.7,"r":0,"fs":19,"bw":43,"bh":27,"a":300.0,"b":0.0},{"x":173.4,"y":1792.7,"r":-90,"fs":19,"bw":29,"bh":41,"a":225.0,"b":0.0},{"x":2134.9,"y":2194.7,"r":0,"fs":19,"bw":32,"bh":27,"a":0.0,"b":1.0},{"x":1930.6,"y":2194.7,"r":0,"fs":19,"bw":43,"bh":27,"a":130.0,"b":-2.0},{"x":1726.4,"y":2194.7,"r":0,"fs":19,"bw":32,"bh":27,"a":0.0,"b":1.0},{"x":1904.0,"y":2258.7,"r":0,"fs":19,"bw":43,"bh":27,"a":130.0,"b":1.0},{"x":1580.9,"y":2133.6,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":1580.9,"y":1947.2,"r":-90,"fs":19,"bw":29,"bh":30,"a":112.5,"b":-1.5},{"x":1580.9,"y":1760.7,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":1580.9,"y":1574.2,"r":-90,"fs":19,"bw":29,"bh":30,"a":112.5,"b":-1.5},{"x":1580.9,"y":1387.8,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":1512.9,"y":1760.7,"r":-90,"fs":19,"bw":29,"bh":41,"a":225.0,"b":0.0},{"x":2967.2,"y":2084.6,"r":0,"fs":19,"bw":43,"bh":27,"a":300.0,"b":0.0},{"x":2368.9,"y":2023.6,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":2368.9,"y":1819.3,"r":-90,"fs":19,"bw":29,"bh":41,"a":130.0,"b":-2.0},{"x":2368.9,"y":1615.1,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":2300.9,"y":1819.3,"r":-90,"fs":19,"bw":29,"bh":41,"a":130.0,"b":0.0}],"texts":[]},"b1":{"w":3600,"h":2019,"nums":[{"x":1613.6,"y":614.5,"r":0,"fs":17,"bw":40,"bh":24,"a":240.0,"b":0},{"x":1356.1,"y":437.2,"r":-90,"fs":17,"bw":27,"bh":38,"a":180.0,"b":0},{"x":2164.9,"y":649.5,"r":0,"fs":17,"bw":40,"bh":24,"a":240.0,"b":0},{"x":1907.3,"y":454.7,"r":-90,"fs":17,"bw":27,"bh":38,"a":230.0,"b":-2},{"x":1613.6,"y":1190.9,"r":0,"fs":17,"bw":40,"bh":24,"a":240.0,"b":0},{"x":1356.1,"y":996.1,"r":-90,"fs":17,"bw":27,"bh":38,"a":230.0,"b":-2},{"x":2086.3,"y":1190.9,"r":0,"fs":17,"bw":40,"bh":24,"a":180.0,"b":-2},{"x":1907.3,"y":996.1,"r":-90,"fs":17,"bw":27,"bh":38,"a":230.0,"b":-2},{"x":1613.6,"y":1572.9,"r":0,"fs":16,"bw":37,"bh":23,"a":120.0,"b":0.0},{"x":1733.3,"y":1586.0,"r":-90,"fs":16,"bw":26,"bh":26,"a":45.0,"b":0.0},{"x":1456.4,"y":1763.3,"r":0,"fs":17,"bw":30,"bh":24,"a":60.0,"b":0.0},{"x":1613.6,"y":1763.3,"r":0,"fs":17,"bw":40,"bh":24,"a":120.0,"b":0.0},{"x":1770.9,"y":1763.3,"r":0,"fs":17,"bw":30,"bh":24,"a":60.0,"b":0.0},{"x":1356.1,"y":1684.3,"r":-90,"fs":17,"bw":27,"bh":42,"a":67.5,"b":0.0},{"x":1356.1,"y":1586.0,"r":-90,"fs":17,"bw":27,"bh":28,"a":45.0,"b":0.0},{"x":1356.1,"y":1487.8,"r":-90,"fs":17,"bw":27,"bh":42,"a":67.5,"b":0.0},{"x":2133.5,"y":1541.5,"r":0,"fs":16,"bw":37,"bh":23,"a":120.0,"b":0.0},{"x":2253.2,"y":1554.6,"r":-90,"fs":16,"bw":26,"bh":26,"a":45.0,"b":0.0},{"x":1992.0,"y":1700.4,"r":0,"fs":17,"bw":30,"bh":24,"a":57.0,"b":-1.0},{"x":2133.5,"y":1700.4,"r":0,"fs":17,"bw":40,"bh":24,"a":120.0,"b":0.0},{"x":2275.0,"y":1700.4,"r":0,"fs":17,"bw":30,"bh":24,"a":57.0,"b":-1.0},{"x":1907.3,"y":1637.1,"r":-90,"fs":17,"bw":27,"bh":42,"a":64.5,"b":-1.0},{"x":1907.3,"y":1554.6,"r":-90,"fs":17,"bw":27,"bh":28,"a":45.0,"b":0.0},{"x":1907.3,"y":1472.0,"r":-90,"fs":17,"bw":27,"bh":42,"a":64.5,"b":-1.0},{"x":2568.1,"y":474.8,"r":0,"fs":17,"bw":30,"bh":24,"a":70.0,"b":0},{"x":2459.1,"y":367.3,"r":-90,"fs":17,"bw":27,"bh":38,"a":100.0,"b":0},{"x":2649.3,"y":402.3,"r":-90,"fs":17,"bw":27,"bh":28,"a":60.0,"b":0},{"x":2813.7,"y":404.9,"r":0,"fs":17,"bw":30,"bh":24,"a":60.0,"b":0},{"x":2713.3,"y":332.4,"r":-90,"fs":17,"bw":27,"bh":28,"a":60.0,"b":0},{"x":3050.5,"y":396.1,"r":0,"fs":17,"bw":30,"bh":24,"a":60.0,"b":0},{"x":2950.2,"y":328.0,"r":-90,"fs":17,"bw":27,"bh":28,"a":70.0,"b":-1},{"x":2568.1,"y":942.4,"r":0,"fs":17,"bw":30,"bh":24,"a":70.0,"b":0},{"x":2459.1,"y":817.5,"r":-90,"fs":17,"bw":27,"bh":38,"a":120.0,"b":0},{"x":2649.3,"y":835.0,"r":-90,"fs":17,"bw":27,"bh":38,"a":100.0,"b":0},{"x":2796.2,"y":907.5,"r":0,"fs":17,"bw":30,"bh":24,"a":40.0,"b":0},{"x":2713.3,"y":800.0,"r":-90,"fs":17,"bw":27,"bh":38,"a":100.0,"b":0},{"x":2998.1,"y":828.8,"r":0,"fs":17,"bw":30,"bh":24,"a":40.0,"b":0},{"x":2915.2,"y":760.7,"r":-90,"fs":17,"bw":27,"bh":28,"a":70.0,"b":-1},{"x":2617.1,"y":1689.6,"r":0,"fs":17,"bw":40,"bh":24,"a":126.0,"b":0},{"x":2459.1,"y":1424.9,"r":-90,"fs":17,"bw":27,"bh":38,"a":280.0,"b":0},{"x":2946.5,"y":1549.8,"r":0,"fs":17,"bw":40,"bh":24,"a":100.0,"b":0},{"x":2811.2,"y":1355.0,"r":-90,"fs":17,"bw":27,"bh":38,"a":200.0,"b":0}],"texts":[{"x":70,"y":84,"fs":16,"an":"start","bg":"#F3F1EC","bw":775,"bh":24,"col":"ink2","dec":2,"tpl":"집성목 {T}T · 단위 mm · 부재 25 장 · 나무 쓰는 넓이 약 {0} m²   (집성목 한 판 2440 × 1220 = 2.98 m²)","v":[[0.46,-0.003]]},{"x":1356,"y":745,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[240.0,0],[180.0,0]]},{"x":1907,"y":745,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[240.0,0],[230.0,-2]]},{"x":1356,"y":1287,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[240.0,0],[230.0,-2]]},{"x":1907,"y":1287,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   2개","v":[[180.0,-2],[230.0,-2]]},{"x":1356,"y":1859,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[240.0,0],[180.0,0]]},{"x":1907,"y":1859,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[234.0,-2],[174.0,-2]]},{"x":2459,"y":571,"fs":14,"an":"start","bw":148,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   4개","v":[[70.0,0],[100.0,0]]},{"x":2713,"y":571,"fs":14,"an":"start","bw":140,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   2개","v":[[60.0,0],[60.0,0]]},{"x":2950,"y":571,"fs":14,"an":"start","bw":140,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   2개","v":[[60.0,0],[70.0,-1]]},{"x":2459,"y":1038,"fs":14,"an":"start","bw":148,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   4개","v":[[70.0,0],[120.0,0]]},{"x":2713,"y":1038,"fs":14,"an":"start","bw":148,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   2개","v":[[40.0,0],[100.0,0]]},{"x":2915,"y":1038,"fs":14,"an":"start","bw":140,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   2개","v":[[40.0,0],[70.0,-1]]},{"x":2459,"y":1785,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[126.0,0],[280.0,0]]},{"x":2811,"y":1785,"fs":14,"an":"start","bw":156,"bh":21,"col":"ink2","tpl":"{0} × {1} × {T}T   1개","v":[[100.0,0],[200.0,0]]}]},"b2":{"w":3600,"h":2066,"nums":[{"x":344.4,"y":923.7,"r":0,"fs":19,"bw":32,"bh":27,"a":66.0,"b":-2.0},{"x":478.8,"y":923.7,"r":0,"fs":19,"bw":32,"bh":27,"a":60.0,"b":2.0},{"x":830.7,"y":923.7,"r":0,"fs":19,"bw":43,"bh":27,"a":240.0,"b":0.0},{"x":1161.4,"y":923.7,"r":0,"fs":19,"bw":32,"bh":27,"a":40.0,"b":2.0},{"x":1268.0,"y":923.7,"r":0,"fs":19,"bw":32,"bh":27,"a":60.0,"b":-2.0},{"x":803.0,"y":987.7,"r":0,"fs":19,"bw":43,"bh":27,"a":466.0,"b":0.0},{"x":830.7,"y":226.4,"r":0,"fs":19,"bw":43,"bh":27,"a":240.0,"b":0.0},{"x":240.4,"y":782.6,"r":-90,"fs":19,"bw":29,"bh":41,"a":100.0,"b":0},{"x":172.4,"y":644.0,"r":-90,"fs":19,"bw":29,"bh":41,"a":230.0,"b":0.0},{"x":104.4,"y":590.6,"r":-90,"fs":19,"bw":29,"bh":41,"a":280.0,"b":0},{"x":1334.4,"y":761.3,"r":-90,"fs":19,"bw":29,"bh":41,"a":120.0,"b":0},{"x":1402.4,"y":676.0,"r":-90,"fs":19,"bw":29,"bh":41,"a":200.0,"b":0},{"x":1757.4,"y":891.6,"r":0,"fs":19,"bw":48,"bh":27,"a":20.0,"b":-0.5},{"x":1845.3,"y":856.7,"r":0,"fs":19,"bw":32,"bh":27,"a":70.0,"b":0.0},{"x":1936.0,"y":891.6,"r":0,"fs":19,"bw":32,"bh":27,"a":0.0,"b":1.0},{"x":2026.7,"y":856.7,"r":0,"fs":19,"bw":32,"bh":27,"a":70.0,"b":0.0},{"x":2114.6,"y":891.6,"r":0,"fs":19,"bw":48,"bh":27,"a":20.0,"b":-0.5},{"x":1760.0,"y":955.6,"r":0,"fs":19,"bw":32,"bh":27,"a":0.0,"b":1.0},{"x":1936.0,"y":920.7,"r":0,"fs":19,"bw":43,"bh":27,"a":180.0,"b":-2.0},{"x":2112.0,"y":955.6,"r":0,"fs":19,"bw":32,"bh":27,"a":0.0,"b":1.0},{"x":1936.0,"y":984.7,"r":0,"fs":19,"bw":43,"bh":27,"a":180.0,"b":0.0},{"x":1674.6,"y":806.3,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":1678.4,"y":577.0,"r":-90,"fs":19,"bw":29,"bh":41,"a":230.0,"b":-2.0},{"x":1674.6,"y":347.7,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":1610.4,"y":577.0,"r":-90,"fs":19,"bw":29,"bh":41,"a":230.0,"b":0.0},{"x":1542.4,"y":523.6,"r":-90,"fs":19,"bw":29,"bh":41,"a":280.0,"b":0},{"x":2162.4,"y":715.6,"r":-90,"fs":19,"bw":29,"bh":41,"a":100.0,"b":0},{"x":2960.7,"y":508.9,"r":0,"fs":18,"bw":40,"bh":26,"a":120.0,"b":0.0},{"x":3101.9,"y":523.6,"r":-90,"fs":18,"bw":28,"bh":28,"a":45.0,"b":0.0},{"x":2768.7,"y":750.0,"r":0,"fs":19,"bw":32,"bh":27,"a":60.0,"b":0.0},{"x":2960.7,"y":750.0,"r":0,"fs":19,"bw":43,"bh":27,"a":120.0,"b":0.0},{"x":3152.7,"y":750.0,"r":0,"fs":19,"bw":32,"bh":27,"a":60.0,"b":0.0},{"x":2570.4,"y":814.0,"r":0,"fs":19,"bw":43,"bh":27,"a":126.0,"b":0},{"x":2960.7,"y":814.0,"r":0,"fs":19,"bw":43,"bh":27,"a":240.0,"b":0.0},{"x":3323.3,"y":814.0,"r":0,"fs":19,"bw":43,"bh":27,"a":100.0,"b":0.0},{"x":2933.0,"y":878.0,"r":0,"fs":19,"bw":43,"bh":27,"a":466.0,"b":0.0},{"x":2370.4,"y":403.6,"r":-90,"fs":19,"bw":29,"bh":46,"a":67.5,"b":0.0},{"x":2370.4,"y":523.6,"r":-90,"fs":19,"bw":29,"bh":30,"a":45.0,"b":0.0},{"x":2370.4,"y":643.6,"r":-90,"fs":19,"bw":29,"bh":46,"a":67.5,"b":0.0},{"x":2302.4,"y":523.6,"r":-90,"fs":19,"bw":29,"bh":41,"a":180.0,"b":0.0},{"x":3499.4,"y":345.0,"r":-90,"fs":19,"bw":29,"bh":46,"a":20.0,"b":-0.5},{"x":3464.4,"y":433.0,"r":-90,"fs":19,"bw":29,"bh":30,"a":70.0,"b":0.0},{"x":3499.4,"y":523.6,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":3464.4,"y":614.3,"r":-90,"fs":19,"bw":29,"bh":30,"a":70.0,"b":0.0},{"x":3499.4,"y":702.3,"r":-90,"fs":19,"bw":29,"bh":46,"a":20.0,"b":-0.5},{"x":1227.6,"y":1867.0,"r":0,"fs":19,"bw":32,"bh":27,"a":66.0,"b":-2.0},{"x":1093.2,"y":1867.0,"r":0,"fs":19,"bw":32,"bh":27,"a":60.0,"b":2.0},{"x":741.3,"y":1867.0,"r":0,"fs":19,"bw":43,"bh":27,"a":240.0,"b":0.0},{"x":410.7,"y":1867.0,"r":0,"fs":19,"bw":32,"bh":27,"a":40.0,"b":2.0},{"x":304.0,"y":1867.0,"r":0,"fs":19,"bw":32,"bh":27,"a":60.0,"b":-2.0},{"x":769.0,"y":1931.0,"r":0,"fs":19,"bw":43,"bh":27,"a":466.0,"b":0.0},{"x":741.3,"y":1169.7,"r":0,"fs":19,"bw":43,"bh":27,"a":240.0,"b":0.0},{"x":206.4,"y":1704.5,"r":-90,"fs":19,"bw":29,"bh":41,"a":120.0,"b":0},{"x":138.4,"y":1619.2,"r":-90,"fs":19,"bw":29,"bh":41,"a":200.0,"b":0},{"x":1300.4,"y":1725.9,"r":-90,"fs":19,"bw":29,"bh":41,"a":100.0,"b":0},{"x":1368.4,"y":1533.9,"r":-90,"fs":19,"bw":29,"bh":41,"a":280.0,"b":0},{"x":2046.6,"y":1866.9,"r":0,"fs":19,"bw":48,"bh":27,"a":20.0,"b":-0.5},{"x":1958.7,"y":1832.0,"r":0,"fs":19,"bw":32,"bh":27,"a":70.0,"b":0.0},{"x":1868.0,"y":1866.9,"r":0,"fs":19,"bw":32,"bh":27,"a":0.0,"b":1.0},{"x":1777.3,"y":1832.0,"r":0,"fs":19,"bw":32,"bh":27,"a":70.0,"b":0.0},{"x":1689.4,"y":1866.9,"r":0,"fs":19,"bw":48,"bh":27,"a":20.0,"b":-0.5},{"x":1868.0,"y":1896.0,"r":0,"fs":19,"bw":43,"bh":27,"a":180.0,"b":0.0},{"x":1606.6,"y":1781.5,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":1610.4,"y":1552.2,"r":-90,"fs":19,"bw":29,"bh":41,"a":230.0,"b":-2.0},{"x":1606.6,"y":1322.9,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":1542.4,"y":1552.2,"r":-90,"fs":19,"bw":29,"bh":41,"a":230.0,"b":0.0},{"x":2094.4,"y":1669.5,"r":-90,"fs":19,"bw":29,"bh":41,"a":120.0,"b":0},{"x":2162.4,"y":1584.2,"r":-90,"fs":19,"bw":29,"bh":41,"a":200.0,"b":0},{"x":2536.4,"y":1725.3,"r":0,"fs":19,"bw":43,"bh":27,"a":126.0,"b":0},{"x":2926.7,"y":1725.3,"r":0,"fs":19,"bw":43,"bh":27,"a":240.0,"b":0.0},{"x":3289.3,"y":1725.3,"r":0,"fs":19,"bw":43,"bh":27,"a":100.0,"b":0.0},{"x":2899.0,"y":1789.3,"r":0,"fs":19,"bw":43,"bh":27,"a":466.0,"b":0.0},{"x":2336.4,"y":1498.9,"r":-90,"fs":19,"bw":29,"bh":41,"a":180.0,"b":0.0},{"x":3465.4,"y":1677.5,"r":-90,"fs":19,"bw":29,"bh":46,"a":20.0,"b":-0.5},{"x":3430.4,"y":1589.6,"r":-90,"fs":19,"bw":29,"bh":30,"a":70.0,"b":0.0},{"x":3465.4,"y":1498.9,"r":-90,"fs":19,"bw":29,"bh":30,"a":0.0,"b":1.0},{"x":3430.4,"y":1408.2,"r":-90,"fs":19,"bw":29,"bh":30,"a":70.0,"b":0.0},{"x":3465.4,"y":1320.3,"r":-90,"fs":19,"bw":29,"bh":46,"a":20.0,"b":-0.5}],"texts":[]}};
+
+var BASE = 15;                       /* 그림을 그린 두께 */
+var img=document.getElementById("img"), stage=document.getElementById("stage"),
+    inner=document.getElementById("inner"), ov=document.getElementById("ov"),
+    tabs=document.getElementById("tabs"), tkR=document.getElementById("tk"),
+    cur=null, T=15;
+
+function mm(v, dec){
+  var p = Math.pow(10, dec==null?1:dec);
+  return String(Math.round(v*p)/p);
+}
+function el(n){ return document.createElementNS("http://www.w3.org/2000/svg", n); }
+
+/* 그림 위 숫자를 지금 두께로 다시 쓴다.
+   그림(선)은 15mm 로 그린 것 그대로이고, 숫자만 바뀐다 */
+function paint(){
+  var D = DIM_DATA[cur.k];
+  ov.innerHTML = "";
+  if(!D) return;
+  ov.setAttribute("viewBox", "0 0 " + D.w + " " + D.h);
+  var moved = Math.abs(T - BASE) > 1e-9;
+  var pend = [];
+
+  (D.nums||[]).forEach(function(n){
+    var live = Math.abs(n.b) > 1e-9;
+    var g = el("g"), r = el("rect"), t = el("text");
+    t.textContent = mm(n.a + n.b*T);
+    t.setAttribute("x", n.x); t.setAttribute("y", n.y);
+    t.setAttribute("text-anchor", "middle");
+    t.setAttribute("dominant-baseline", "central");
+    t.setAttribute("font-size", n.fs);
+    t.setAttribute("font-weight", "700");
+    t.setAttribute("fill", (moved && live) ? "#A2451B" : "#146862");
+    if(n.r) t.setAttribute("transform", "rotate("+n.r+" "+n.x+" "+n.y+")");
+    g.appendChild(r); g.appendChild(t); ov.appendChild(g);
+    pend.push([r, t, n, !!n.r]);
+  });
+
+  (D.texts||[]).forEach(function(q){
+    var s = q.tpl.replace("{T}", mm(T));
+    (q.v||[]).forEach(function(ab, i){
+      s = s.replace("{"+i+"}", mm(ab[0] + ab[1]*T, q.dec));
+    });
+    var g = el("g"), r = el("rect"), t = el("text");
+    t.textContent = s;
+    t.setAttribute("x", q.x); t.setAttribute("y", q.y);
+    t.setAttribute("text-anchor", q.an || "start");
+    t.setAttribute("dominant-baseline", "central");
+    t.setAttribute("font-size", q.fs);
+    t.setAttribute("fill", q.col === "ink2" ? "#6C665C" : "#1A1814");
+    g.appendChild(r); g.appendChild(t); ov.appendChild(g);
+    r.setAttribute("x", q.x - 3); r.setAttribute("y", q.y - q.bh/2);
+    r.setAttribute("width", q.bw); r.setAttribute("height", q.bh);
+    r.setAttribute("fill", q.bg || "#FFFFFE");
+  });
+
+  /* 글자를 실제로 재서 바탕 네모를 덮는다 (원래 숫자가 비쳐 보이면 안 된다) */
+  pend.forEach(function(p){
+    var r = p[0], t = p[1], n = p[2], rot = p[3];
+    var bb;
+    try { bb = t.getBBox(); } catch(e) { bb = {width:n.bw, height:n.bh}; }
+    var w = rot ? bb.height + 6 : bb.width + 10;
+    var h = rot ? bb.width + 10 : bb.height + 6;
+    w = Math.max(w, n.bw); h = Math.max(h, n.bh);
+    r.setAttribute("x", n.x - w/2); r.setAttribute("y", n.y - h/2);
+    r.setAttribute("width", w); r.setAttribute("height", h);
+    r.setAttribute("fill", "#FFFFFE");
+  });
+
+  document.getElementById("note").innerHTML = moved
+    ? "그림의 <b>선</b>은 15mm 로 그린 그대로이고, <b>숫자만</b> " + mm(T) +
+      "mm 에 맞춰 다시 적었습니다. 주황색이 두께 때문에 바뀐 숫자입니다. " +
+      "내려받는 그림 파일은 15mm 고정입니다."
+    : "치수는 mm. 위에서 판 두께를 바꾸면 도면의 숫자가 따라 바뀝니다 (그림의 선은 15mm 기준 그대로).";
+}
+
+function show(k, push){
+  var s = null;
+  for (var i=0;i<SHEETS.length;i++) if (SHEETS[i].k === k) s = SHEETS[i];
+  if (!s) s = SHEETS[0];
+  cur = s;
+  img.src = s.f; img.alt = s.t;
+  document.getElementById("ttl").textContent = s.t;
+  document.getElementById("raw").href = s.f;
+  document.title = s.t + " — 도면";
+  stage.classList.remove("zoom");
+  document.getElementById("zoom").textContent = "원본 크기로 보기";
+  var bs = tabs.children;
+  for (var j=0;j<bs.length;j++)
+    bs[j].setAttribute("aria-selected", bs[j].dataset.k === s.k ? "true" : "false");
+  if (push) history.replaceState(null, "", "?p=" + s.k + "&t=" + mm(T));
+  stage.scrollTop = 0; stage.scrollLeft = 0;
+  paint();
+}
+
+function setT(v, quiet){
+  v = Math.max(9, Math.min(25, Math.round(v*2)/2));
+  T = v;
+  tkR.value = v;
+  document.getElementById("tkv").textContent = mm(v) + "mm";
+  [].forEach.call(document.querySelectorAll("#tkp button"), function(b){
+    b.classList.toggle("on", parseFloat(b.dataset.t) === T);
+  });
+  if(!quiet){
+    try{ localStorage.setItem("mokgongT", String(T)); }catch(e){}
+    history.replaceState(null, "", "?p=" + cur.k + "&t=" + mm(T));
+  }
+  paint();
+}
+
+SHEETS.forEach(function(s){
+  var b = document.createElement("button");
+  b.className = "tab"; b.type = "button"; b.dataset.k = s.k; b.textContent = s.tab;
+  b.onclick = function(){ show(s.k, true); };
+  tabs.appendChild(b);
+});
+[12,15,18,24].forEach(function(t){
+  var b = document.createElement("button");
+  b.type = "button"; b.dataset.t = t; b.textContent = t;
+  b.onclick = function(){ setT(t); };
+  document.getElementById("tkp").appendChild(b);
+});
+tkR.oninput = function(){ setT(parseFloat(this.value)); };
+
+document.getElementById("zoom").onclick = function(){
+  var on = stage.classList.toggle("zoom");
+  this.textContent = on ? "화면 폭에 맞추기" : "원본 크기로 보기";
+  if (on) stage.scrollLeft = (inner.scrollWidth - stage.clientWidth) / 2;
+};
+img.onload = function(){
+  inner.style.maxWidth = img.naturalWidth + "px";
+  document.getElementById("hint").textContent =
+    "원본 " + img.naturalWidth + " × " + img.naturalHeight + " · 손가락 두 개로 확대됩니다";
+  paint();
+};
+
+(function(){
+  var q = new URLSearchParams(location.search);
+  var t = parseFloat(q.get("t"));
+  if(!(t > 0)){ try{ t = parseFloat(localStorage.getItem("mokgongT")); }catch(e){} }
+  cur = SHEETS[0];
+  setT(t > 0 ? t : 15, true);
+  show((q.get("p") || "a1").toLowerCase(), false);
+})();
+</script>
+</body>
+</html>
