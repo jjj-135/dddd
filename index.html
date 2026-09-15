@@ -352,47 +352,53 @@ function modelB(){
   p({id:6, g:"뚜껑", n:"뚜껑 받침턱", cut:"204 × 144", q:1, x:18, y:H-2*T, z:18, w:204, h:T, d:144,
      chg:"새로 넣음 — 뚜껑이 안 밀리게"});
 
-  /* 포스트잇함 : 본체 왼쪽 옆면에 붙어 바깥으로 70 */
-  p({id:7, g:"포스트잇함", n:"포스트잇함 옆판", cut:"70 × 60~100", q:2, x:-70, y:0, z:45,  w:70, h:100, d:T, curve:[60,100]});
-  p({id:7, g:"포스트잇함", n:"포스트잇함 옆판", cut:"70 × 60~100", q:0, x:-70, y:0, z:120, w:70, h:100, d:T, curve:[60,100]});
-  p({id:8, g:"포스트잇함", n:"포스트잇함 바깥판", cut:"60 × 60", q:1, x:-70, y:0, z:60, w:T,    h:60, d:60});
-  p({id:9, g:"포스트잇함", n:"포스트잇함 바닥판", cut:"60 × 55", q:1, x:-55, y:0, z:60, w:70-T, h:T,  d:60, chg:"새로 넣음"});
-  [[68,80,"note1"],[78,86,"note2"],[88,74,"note3"]].forEach(function(s){
-    p({id:0, g:"포스트잇함", n:"포스트잇", cut:"", q:0, x:-54, y:16, z:s[0], w:46, h:s[1], d:7,
+  /* 포스트잇함 : 본체 왼쪽에 붙되 **바깥판이 정면(사용자 쪽)을 본다**.
+     옆판 두 장이 좌우 벽, 앞판이 앞을 막는다. 깊이 70 은 앞면에 맞춰 z 110~180 */
+  p({id:7, g:"포스트잇함", n:"포스트잇함 옆판", cut:"70 × 60~100", q:2, x:-90, y:0, z:110, w:T, h:100, d:70, curve:[100,60]});
+  p({id:7, g:"포스트잇함", n:"포스트잇함 옆판", cut:"70 × 60~100", q:0, x:-15, y:0, z:110, w:T, h:100, d:70, curve:[100,60]});
+  p({id:8, g:"포스트잇함", n:"포스트잇함 앞판", cut:"60 × 60", q:1, x:-75, y:0, z:D-T, w:60, h:60, d:T,
+     chg:"바깥판 → 앞판. 정면을 보게 돌림"});
+  p({id:9, g:"포스트잇함", n:"포스트잇함 바닥판", cut:"60 × 55", q:1, x:-75, y:0, z:110, w:60, h:T, d:55, chg:"새로 넣음"});
+  [[122,78,"note1"],[136,86,"note2"],[150,72,"note3"]].forEach(function(s){
+    p({id:0, g:"포스트잇함", n:"포스트잇", cut:"", q:0, x:-70, y:16, z:s[0], w:50, h:s[1], d:9,
        r:2, col:COL[s[2]], decor:true, sub:"참고용 · 부재 아님"});
   });
 
-  /* 필기도구함 : 본체 오른쪽 옆면에 붙어 바깥으로 70 */
-  p({id:10,g:"필기도구함", n:"필기도구함 옆판", cut:"70 × 100~120", q:2, x:W, y:0, z:45,  w:70, h:120, d:T, curve:[120,100]});
-  p({id:10,g:"필기도구함", n:"필기도구함 옆판", cut:"70 × 100~120", q:0, x:W, y:0, z:100, w:70, h:120, d:T, curve:[120,100]});
-  p({id:11,g:"필기도구함", n:"필기도구함 바깥판", cut:"40 × 100", q:1, x:W+70-T, y:0, z:60, w:T,    h:100, d:40});
-  p({id:12,g:"필기도구함", n:"필기도구함 바닥판", cut:"40 × 55",  q:1, x:W,      y:0, z:60, w:70-T, h:T,   d:40, chg:"새로 넣음"});
-  [[255,72,"pen1"],[272,66,"pen2"],[288,80,"pen3"]].forEach(function(s){
+  /* 필기도구함 : 오른쪽. 마찬가지로 앞판이 정면을 본다 */
+  p({id:10,g:"필기도구함", n:"필기도구함 옆판", cut:"70 × 100~120", q:2, x:W,     y:0, z:110, w:T, h:120, d:70, curve:[120,100]});
+  p({id:10,g:"필기도구함", n:"필기도구함 옆판", cut:"70 × 100~120", q:0, x:W+55,  y:0, z:110, w:T, h:120, d:70, curve:[120,100]});
+  p({id:11,g:"필기도구함", n:"필기도구함 앞판", cut:"40 × 100", q:1, x:W+T, y:0, z:D-T, w:40, h:100, d:T,
+     chg:"바깥판 → 앞판. 정면을 보게 돌림"});
+  p({id:12,g:"필기도구함", n:"필기도구함 바닥판", cut:"40 × 55", q:1, x:W+T, y:0, z:110, w:40, h:T, d:55, chg:"새로 넣음"});
+  [[262,128,"pen1"],[274,146,"pen2"],[286,134,"pen3"]].forEach(function(s){
     p({id:0, g:"필기도구함", n:"펜", cut:"", q:0, x:s[0], y:15, z:s[1], cyl:[4,150], col:COL[s[2]], decor:true, sub:"참고용 · 부재 아님"});
   });
 
-  /* 닭머리 장식 : 정면을 보는 판. 함 뒤쪽(z 18~33)에 서서 머리가 위로 솟는다 */
-  p({id:13,g:"닭머리 장식", n:"닭머리 장식판", cut:"70 × 235", q:1, x:-75, y:0,   z:18, w:70, h:235, d:T, silh:"head"});
-  p({id:14,g:"닭머리 장식", n:"볏",   cut:"40 × 38", q:1, x:-60, y:212, z:18, w:40, h:38, d:T, silh:"comb", col:COL.comb, chg:"새로 나눔 — 빨갛게 칠함"});
-  p({id:15,g:"닭머리 장식", n:"부리", cut:"16 × 20", q:1, x:-88, y:186, z:18, w:16, h:20, d:T, silh:"beak", col:COL.beak, chg:"새로 나눔"});
-  p({id:16,g:"닭머리 장식", n:"눈",   cut:"지름 8",  q:1, x:-40, y:198, z:16, w:8,  h:8,  d:T+4, silh:"eye", col:COL.eye, sub:"버닝으로 대체 가능"});
+  /* 닭머리 장식 : 정면을 보는 판. 함보다 뒤(z 88~103)에 서고 볏·부리·벼슬은 그 앞면에 덧붙인다 */
+  p({id:13,g:"닭머리 장식", n:"닭머리 장식판", cut:"110 × 250", q:1, x:-110, y:0, z:88, w:110, h:250, d:T,
+     silh:"head", chg:"70×235 → 110×250 · 앞이 뚱뚱한 곡선 몸통으로"});
+  p({id:14,g:"닭머리 장식", n:"볏",       cut:"52 × 42", q:1, x:-92,  y:208, z:103, w:52, h:42, d:T, silh:"comb",   col:COL.comb, sub:"머리 앞면에 덧붙임"});
+  p({id:15,g:"닭머리 장식", n:"부리",     cut:"32 × 24", q:1, x:-124, y:176, z:103, w:32, h:24, d:T, silh:"beak",   col:COL.beak, sub:"머리 앞면에 덧붙임"});
+  p({id:16,g:"닭머리 장식", n:"턱 벼슬",  cut:"20 × 28", q:1, x:-99, y:152, z:103, w:20, h:28, d:T, silh:"wattle", col:COL.comb, chg:"새로 넣음"});
+  p({id:17,g:"닭머리 장식", n:"눈",       cut:"지름 10", q:1, x:-72, y:197, z:118, w:10, h:10, d:8, silh:"eye", col:COL.eye, sub:"버닝으로 대체 가능"});
 
   /* 꼬리 장식 */
-  p({id:17,g:"꼬리 장식", n:"꼬리 장식판", cut:"80 × 150", q:1, x:250, y:95, z:18, w:80, h:150, d:T, silh:"tail",
-     chg:"50×80 → 80×150 · 위치도 위로"});
+  p({id:18,g:"꼬리 장식", n:"꼬리 장식판", cut:"90 × 175", q:1, x:W, y:75, z:88, w:90, h:175, d:T, silh:"tail",
+     chg:"50×80 → 90×175 · 손그림 모양으로"});
 
   return { key:"B", title:"닭 이야기상자", parts:P, W:W, H:H, D:D,
     dims:[["본체 가로",W],["본체 높이",H],["본체 깊이",D]],
-    span:[-88, 330], top:250,
+    span:[-124, 330], top:250,
     groups:{ "프레임":[0,0,0,0], "뚜껑":[0,1,0,125], "포스트잇함":[-1,0,0,135],
              "필기도구함":[1,0,0,135], "닭머리 장식":[-0.5,0.15,-1,140], "꼬리 장식":[0.5,0.15,-1,140] },
     fixes:[
-      ["고침","<b>닭머리를 정면 보게 다시 만들었습니다.</b> 처음엔 옆면에 붙은 통닭 실루엣이었는데, 레퍼런스는 <b>정면을 보는 머리+목</b>이고 볏·부리가 따로 붙은 조각입니다."],
-      ["고침","<b>볏·부리·눈을 별도 조각으로 나눴습니다.</b> 볏은 빨강, 부리는 노랑. 레퍼런스와 같은 방식입니다."],
-      ["고침","<b>꼬리 50×80 → 80×150, 붙이는 높이도 위로.</b> 80으로는 앞에 선 필기도구함(120)에 완전히 가려서 안 보입니다."],
-      ["고침","<b>옆판 가로 180 → 150.</b> 앞·뒷판 240과 옆판 180으로 네 벽을 짜면 겉이 240×210이 되는데 윗·아랫판은 240×180이었습니다."],
-      ["고침","<b>뚜껑 받침턱과 함 바닥판 2장을 새로 넣었습니다.</b> 없으면 뚜껑이 밀리고 함 바닥이 뚫립니다."],
-      ["유지","본체 <span class='num'>240 × 180 × 230</span>, 타원 투입구 <span class='num'>120 × 45</span>, 함 치수, 닭머리 높이 <span class='num'>250</span> 은 손도면 그대로입니다."]
+      ["고침","<b>함의 앞판이 정면(사용자 쪽)을 보게 돌렸습니다.</b> 전에는 바깥판이 좌우를 보고 있었습니다. 이제 포스트잇과 펜이 앞에서 보입니다."],
+      ["고침","<b>닭 형상을 손그림대로 다시 만들었습니다.</b> 앞(왼쪽)이 뚱뚱한 곡선 몸통, 오른쪽 변은 상자에 닿는 직선."],
+      ["고침","<b>턱 아래 벼슬(육수)을 넣었습니다.</b> 빠져 있었습니다."],
+      ["고침","<b>볏·부리가 머리와 겹쳐 보이던 것</b>을 고쳤습니다. 이제 머리판 <b>앞면에 한 겹 덧붙는</b> 구조라 겹치지 않고 얹힙니다."],
+      ["고침","<b>꼬리를 손그림 모양(깃 세 갈래)으로</b>, 50×80 → 90×175."],
+      ["고침","<b>옆판 가로 180 → 150</b> · <b>뚜껑 받침턱과 함 바닥판</b>을 새로 넣었습니다."],
+      ["유지","본체 <span class='num'>240 × 180 × 230</span>, 타원 투입구 <span class='num'>120 × 45</span>, 함 옆판 <span class='num'>70</span>·앞판 <span class='num'>60/40</span>, 닭 높이 <span class='num'>250</span> 은 손도면 그대로입니다."]
     ],
     asks:"<p class='note'><b>포스트잇은 소형(51×38) 기준</b>입니다. 함 안쪽이 60×55라 일반 포스트잇(76×76)은 안 들어갑니다.</p>"+
          "<p class='note'><b>앞판에 글씨나 표시를 넣나요?</b> 레퍼런스는 앞판이 '이야기판'이었습니다.</p>"+
@@ -434,63 +440,58 @@ function panelGeom(w,h,d,r){
   return g;
 }
 
-/* 곡선 실루엣. 전부 정면(z축 두께)을 본다 */
+/* 곡선 실루엣. 전부 정면(z축 두께)을 본다.
+   비율(0~1)로 적어두고 실제 치수에 맞춰 늘린다 — 손그림을 그대로 옮긴 것 */
+function shapeOf(pts, w, h){
+  var s=new THREE.Shape(), X=function(u){return u*w}, Y=function(v){return v*h};
+  s.moveTo(X(pts[0][0]),Y(pts[0][1]));
+  for(var i=1;i<pts.length;i++){
+    var p=pts[i];
+    if(p.length===2) s.lineTo(X(p[0]),Y(p[1]));
+    else s.quadraticCurveTo(X(p[0]),Y(p[1]),X(p[2]),Y(p[3]));
+  }
+  return s;
+}
+var PT = {
+  /* 앞(왼쪽)이 뚱뚱한 몸통 + 목 + 머리. 오른쪽 변은 상자에 닿는 직선 */
+  head:[[0.96,0.00],[0.07,0.00],
+        [0.00,0.09, 0.005,0.27],  [0.02,0.43, 0.09,0.53],
+        [0.15,0.60, 0.17,0.665],  [0.135,0.715, 0.145,0.755],
+        [0.155,0.815,0.215,0.858],[0.30,0.928, 0.42,0.922],
+        [0.545,0.906,0.605,0.832],[0.665,0.752,0.725,0.662],
+        [0.845,0.52, 0.925,0.40], [0.965,0.33, 0.96,0.00]],
+  /* 볏 — 아랫변이 오목해서 머리 위에 얹힌다 */
+  comb:[[0.00,0.34],
+        [0.02,0.74, 0.12,0.90],[0.17,0.97, 0.20,0.62],
+        [0.26,0.96, 0.37,0.99],[0.44,0.95, 0.46,0.60],
+        [0.54,0.92, 0.66,0.94],[0.75,0.88, 0.80,0.52],
+        [0.92,0.62, 1.00,0.30],[0.55,0.00, 0.00,0.34]],
+  /* 부리 — 오른쪽이 머리에 붙고 왼쪽으로 뾰족 */
+  beak:[[1.00,0.92],
+        [0.48,0.86, 0.00,0.50],[0.42,0.24, 1.00,0.10],
+        [1.03,0.50, 1.00,0.92]],
+  /* 턱 아래 벼슬(육수) */
+  wattle:[[0.85,1.00],
+        [1.05,0.72, 0.90,0.42],[0.80,0.10, 0.45,0.02],
+        [0.12,0.00, 0.05,0.30],[0.00,0.62, 0.22,0.92],
+        [0.45,1.06, 0.85,1.00]],
+  /* 꼬리 — 아랫변과 왼쪽 변은 직선, 오른쪽에 깃 세 갈래 */
+  tail:[[0.02,0.00],[0.70,0.00],
+        [0.78,0.10, 0.72,0.22],[0.92,0.26, 0.97,0.40],
+        [0.84,0.46, 0.70,0.46],[0.88,0.54, 0.95,0.66],
+        [0.82,0.72, 0.72,0.74],[0.92,0.84, 0.88,0.95],
+        [0.60,1.00, 0.30,0.88],[0.08,0.76, 0.02,0.50],
+        [0.02,0.00]]
+};
 var SILH = {
-  head:function(w,h){                       // 머리 + 목 + 가슴. 부리쪽이 왼쪽
-    var X=function(u){return u/70*w}, Y=function(v){return v/235*h};
-    var s=new THREE.Shape();
-    s.moveTo(X(11),Y(0));
-    s.lineTo(X(59),Y(0));
-    s.quadraticCurveTo(X(71),Y(42),  X(57),Y(96));
-    s.quadraticCurveTo(X(49),Y(132), X(52),Y(166));
-    s.quadraticCurveTo(X(57),Y(192), X(54),Y(213));
-    s.quadraticCurveTo(X(50),Y(233), X(33),Y(235));
-    s.quadraticCurveTo(X(15),Y(234), X(10),Y(212));
-    s.quadraticCurveTo(X(4),Y(198),  X(13),Y(186));
-    s.quadraticCurveTo(X(21),Y(176), X(23),Y(160));
-    s.quadraticCurveTo(X(25),Y(130), X(15),Y(96));
-    s.quadraticCurveTo(X(1),Y(46),   X(11),Y(0));
-    return s;
-  },
-  comb:function(w,h){                       // 볏 세 갈래
-    var X=function(u){return u/40*w}, Y=function(v){return v/38*h};
-    var s=new THREE.Shape();
-    s.moveTo(X(1),Y(7));
-    s.quadraticCurveTo(X(2),Y(29),  X(9),Y(34));
-    s.quadraticCurveTo(X(15),Y(37), X(17),Y(19));
-    s.quadraticCurveTo(X(21),Y(38), X(28),Y(37));
-    s.quadraticCurveTo(X(34),Y(34), X(33),Y(17));
-    s.quadraticCurveTo(X(39),Y(30), X(39),Y(10));
-    s.quadraticCurveTo(X(36),Y(0),  X(20),Y(1));
-    s.quadraticCurveTo(X(6),Y(1),   X(1),Y(7));
-    return s;
-  },
-  beak:function(w,h){                       // 부리
-    var X=function(u){return u/16*w}, Y=function(v){return v/20*h};
-    var s=new THREE.Shape();
-    s.moveTo(X(16),Y(19));
-    s.quadraticCurveTo(X(5),Y(16), X(0),Y(10));
-    s.quadraticCurveTo(X(5),Y(2),  X(16),Y(1));
-    s.quadraticCurveTo(X(15),Y(10),X(16),Y(19));
-    return s;
-  },
-  eye:function(w,h){
+  head:  function(w,h){ return shapeOf(PT.head,w,h); },
+  comb:  function(w,h){ return shapeOf(PT.comb,w,h); },
+  beak:  function(w,h){ return shapeOf(PT.beak,w,h); },
+  wattle:function(w,h){ return shapeOf(PT.wattle,w,h); },
+  tail:  function(w,h){ return shapeOf(PT.tail,w,h); },
+  eye:   function(w,h){
     var s=new THREE.Shape();
     s.absellipse(w/2,h/2,w/2,h/2,0,Math.PI*2,false,0);
-    return s;
-  },
-  tail:function(w,h){                       // 꼬리 깃 세 갈래
-    var X=function(u){return u/80*w}, Y=function(v){return v/150*h};
-    var s=new THREE.Shape();
-    s.moveTo(X(3),Y(0));
-    s.quadraticCurveTo(X(31),Y(7),  X(52),Y(34));
-    s.quadraticCurveTo(X(73),Y(63), X(77),Y(95));
-    s.quadraticCurveTo(X(80),Y(112),X(67),Y(109));
-    s.quadraticCurveTo(X(76),Y(130),X(61),Y(131));
-    s.quadraticCurveTo(X(68),Y(150),X(49),Y(145));
-    s.quadraticCurveTo(X(33),Y(141),X(24),Y(119));
-    s.quadraticCurveTo(X(10),Y(87), X(3),Y(40));
-    s.quadraticCurveTo(X(1),Y(18),  X(3),Y(0));
     return s;
   }
 };
@@ -504,15 +505,19 @@ function geomFor(p){
   if(p.silh){
     g=ext(SILH[p.silh](p.w,p.h), p.d, 24); g.translate(0,0,BEV); return g;
   }
-  if(p.curve){                              // 윗변이 한쪽으로 올라가는 함 옆판
-    var h0=p.curve[0], h1=p.curve[1], L=p.w, top=Math.max(h0,h1);
+  if(p.curve){        // 윗변이 한쪽으로 올라가는 함 옆판. 얇은 축을 찾아 눕힌다
+    var h0=p.curve[0], h1=p.curve[1];
+    var sideways = p.w <= p.d;              // true면 판이 좌우를 본다(두께가 x)
+    var L = sideways ? p.d : p.w, t = sideways ? p.w : p.d;
+    var top=Math.max(h0,h1);
     var s=new THREE.Shape();
     s.moveTo(2,0); s.lineTo(L-2,0);
-    s.quadraticCurveTo(L,0,L,Math.min(h1,h1-2));
+    s.quadraticCurveTo(L,0,L,h1-2);
     s.quadraticCurveTo(L*0.52, top*1.05, 0, h0);
     s.quadraticCurveTo(0,0,2,0);
-    g=ext(s,p.d,20); g.translate(0,0,BEV);
-    g.rotateY(0); return g;
+    g=ext(s,t,20); g.translate(0,0,BEV);
+    if(sideways){ g.rotateY(-Math.PI/2); g.translate(t,0,0); }
+    return g;
   }
   if(p.holes || p.ellipse){
     var a=p.w, b=p.holes?p.h:p.d;
