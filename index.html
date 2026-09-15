@@ -273,7 +273,7 @@
     <span>단위 mm · 판 두께 15T 기준</span>
     <span>치수는 손도면 기준, 배치는 레퍼런스 도면을 따름</span>
     <span id="stamp"></span>
-  <span><a href="도면_A_서랍수납장.png" style="color:var(--accent);font-weight:700">▸ 도면 A 보기 (PNG)</a></span><span><a href="도면_B_닭이야기상자.png" style="color:var(--accent);font-weight:700">▸ 도면 B 보기 (PNG)</a></span>
+  <span><a href="도면_A_서랍수납장.png" style="color:var(--accent);font-weight:700">▸ 서랍장 1장 · 조립도 · 부재도</a></span><span><a href="도면_A_서랍수납장_6면치수.png" style="color:var(--accent);font-weight:700">▸ 서랍장 2장 · 여섯 방향 치수</a></span><span><a href="도면_B_닭이야기상자.png" style="color:var(--accent);font-weight:700">▸ 이야기상자 1장 · 조립도 · 부재도</a></span><span><a href="도면_B_닭이야기상자_6면치수.png" style="color:var(--accent);font-weight:700">▸ 이야기상자 2장 · 여섯 방향 치수</a></span>
   </footer>
 </div>
 
@@ -879,7 +879,13 @@ tabs.forEach(function(t,i){
 function resize(){
   var w=viewer.clientWidth, h=viewer.clientHeight;
   renderer.setSize(w,h,false);
-  camera.aspect=w/h; camera.updateProjectionMatrix();
+  if(camera.isOrthographicCamera){
+    var ow=camera.right-camera.left, r=w/h;
+    camera.top=ow/2/r; camera.bottom=-ow/2/r;
+  }else{
+    camera.aspect=w/h;
+  }
+  camera.updateProjectionMatrix();
 }
 addEventListener("resize",function(){ setTimeout(resize,60); });
 var pv=new THREE.Vector3();
@@ -902,6 +908,23 @@ var startModel = (new URLSearchParams(location.search).get("m")==="B") ? "B" : "
 if(startModel==="B"){ tabs[0].setAttribute("aria-selected","false"); tabs[1].setAttribute("aria-selected","true"); }
 build(startModel); tick();
 document.getElementById("stamp").textContent="2026-09-15 작성";
+
+/* ---- 부재 목록 내보내기. 도면 쪽에서 --dump-dom 으로 읽어간다 ---- */
+(function(){
+  var q=new URLSearchParams(location.search), dm=q.get("dump");
+  if(!dm) return;
+  var M = MODELS[dm==="B"?"B":"A"];
+  var out = {key:M.key, title:M.title, T:T, W:M.W, H:M.H, D:M.D,
+    top:M.top||M.H, span:M.span||[0,M.W], dims:M.dims,
+    groups:Object.keys(M.groups),
+    parts:M.parts.filter(function(p){return !p.decor;}).map(function(p){
+      return {g:p.g,n:p.n,cut:p.cut,q:p.q,sub:p.sub||null,chg:p.chg||null,
+              x:p.x,y:p.y,z:p.z,w:p.w,h:p.h,d:p.d,
+              holes:p.holes||null, ellipse:p.ellipse||null,
+              curve:p.curve||null, drawn:p.drawn||null};}),
+    dak: DAK};
+  document.body.innerHTML = '<pre id="dump">'+JSON.stringify(out)+'</pre>';
+})();
 
 /* ---- 프레임 촬영용. 주소에 ?shot=1 이 붙었을 때만 돈다 ---- */
 (function(){
@@ -926,6 +949,11 @@ document.getElementById("stamp").textContent="2026-09-15 작성";
   yaw=parseFloat(q.get("yaw")||"-0.62");
   pitch=parseFloat(q.get("pitch")||"0.34");
   if(q.get("zoom")) dist*=parseFloat(q.get("zoom"));
+  if(q.get("ow")){                       // 정투영. 화면에 담을 가로 길이(mm)를 준다
+    var ow=parseFloat(q.get("ow")), r=cv.width/cv.height;
+    var oc=new THREE.OrthographicCamera(-ow/2, ow/2, ow/2/r, -ow/2/r, -12000, 12000);
+    camera=oc; dist=3000;
+  }
   resize();
 })();
 })();
