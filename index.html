@@ -275,7 +275,7 @@
     <span id="footT">단위 mm · 판 두께 15T 기준</span>
     <span>치수는 손도면 기준, 배치는 레퍼런스 도면을 따름</span>
     <span id="stamp"></span>
-  <span><a href="도면보기.html?p=a1" style="color:var(--accent);font-weight:700">▸ 서랍장 1장 · 조립도 · 부재도</a></span><span><a href="도면보기.html?p=a2" style="color:var(--accent);font-weight:700">▸ 서랍장 2장 · 여섯 방향 치수</a></span><span><a href="도면보기.html?p=b1" style="color:var(--accent);font-weight:700">▸ 이야기상자 1장 · 조립도 · 부재도</a></span><span><a href="도면보기.html?p=b2" style="color:var(--accent);font-weight:700">▸ 이야기상자 2장 · 여섯 방향 치수</a></span>
+  <span><a href="도면보기.html?p=a" style="color:var(--accent);font-weight:700">▸ 서랍장 · 제작 가이드 & 재단 목록</a></span><span><a href="도면보기.html?p=b" style="color:var(--accent);font-weight:700">▸ 이야기상자 · 제작 가이드 & 재단 목록</a></span>
   </footer>
 </div>
 
@@ -291,6 +291,7 @@ var BEV = 1.1;           // 모서리 둥글리기
 function mm(v){ return String(Math.round(v*10)/10); }
 function cutOf(o){
   var a, b;
+  if(o.knob)         { return "ø"+mm(o.knob[0]*2)+" × 길이 "+mm(o.knob[1]); }
   if(o.drawn)        { a=o.w; b=o.h; }
   else if(o.curve)   { a=(o.w<=o.d)?o.d:o.w; b=Math.max.apply(null, o.curve); }
   else if(o.holes)   { a=o.w; b=o.h; }
@@ -318,7 +319,8 @@ function modelA(){
   var oy1=T, oy2=2*T+OH;               /* 아래·위 구멍이 시작하는 높이 */
   var GAP=2;                           /* 서랍과 구멍 사이 여유 */
   var dw=OW-2*GAP, dh=OH-2*GAP, dd=D-T-20;   /* 서랍 뒤로 20 남긴다 */
-  var KW=60, KH=16;                    /* 손잡이 */
+  var KW=60, KH=16;                    /* 아래 서랍 — 막대 손잡이 */
+  var KR=15, KL=18;                    /* 위 서랍 — 둥근 손잡이. 반지름과 튀어나온 길이 */
   var P=[]; function p(o){ o.cut=cutOf(o); P.push(o); return o; }
 
   p({id:1, g:"프레임", n:"천판",   q:1, x:0,   y:H-T,  z:T, w:W, h:T, d:CD});
@@ -332,14 +334,15 @@ function modelA(){
 
   [[oy1+GAP,"아래 서랍",0],[oy2+GAP,"위 서랍",1]].forEach(function(s){
     var by=s[0], G=s[1], k=s[2], bx=T+GAP, bz=D-dd;
-    p({id:7, g:G, n:"서랍 앞판",   q:k?0:2, x:bx, y:by, z:D-T, w:dw, h:dh, d:T, sub:G, knob:!k});
+    p({id:7, g:G, n:"서랍 앞판",   q:k?0:2, x:bx, y:by, z:D-T, w:dw, h:dh, d:T, sub:G});
     p({id:8, g:G, n:"서랍 바닥판", q:k?0:2, x:bx, y:by, z:bz, w:dw, h:T, d:dd-T});
     p({id:9, g:G, n:"서랍 옆판",   q:k?0:4, x:bx,      y:by+T, z:bz, w:T, h:dh-T, d:dd-T});
     p({id:9, g:G, n:"서랍 옆판",   q:0,     x:bx+dw-T, y:by+T, z:bz, w:T, h:dh-T, d:dd-T});
     p({id:10,g:G, n:"서랍 뒷판",   q:k?0:2, x:bx+T, y:by+T, z:bz, w:dw-2*T, h:dh-T, d:T});
-    if(!k) p({id:11, g:G, n:"서랍 손잡이", q:1,
-              x:bx+(dw-KW)/2, y:by+(dh-KH)/2, z:D, w:KW, h:KH, d:T,
-              sub:"아래 서랍만 (위 서랍은 버닝 글씨)"});
+    if(k) p({id:11, g:G, n:"위 서랍 손잡이", q:1,
+             x:bx+dw/2-KR, y:by+dh/2-KR, z:D, w:2*KR, h:2*KR, d:KL, knob:[KR,KL]});
+    else  p({id:12, g:G, n:"아래 서랍 손잡이", q:1,
+             x:bx+(dw-KW)/2, y:by+(dh-KH)/2, z:D, w:KW, h:KH, d:T});
   });
 
   return { key:"A", title:"서랍 2칸 수납장", parts:P, W:W, H:H, D:D,
@@ -516,6 +519,13 @@ function geomFor(p){
   if(p.drawn){
     g = new THREE.ExtrudeGeometry(drawnShape(p.drawn, p.w, p.h),
           {depth:p.d, bevelEnabled:false, curveSegments:1});
+    return g;
+  }
+  if(p.knob){                               // 둥근 손잡이. 축이 앞뒤(z)를 본다
+    var kr=p.knob[0], kl=p.knob[1];
+    g=new THREE.CylinderGeometry(kr, kr*0.80, kl, 24);
+    g.rotateX(Math.PI/2);
+    g.translate(kr, kr, kl/2);
     return g;
   }
   if(p.cyl){                                // 펜
@@ -980,7 +990,7 @@ document.getElementById("stamp").textContent="2026-09-16 작성";
       return {g:p.g,n:p.n,cut:p.cut,q:p.q,sub:p.sub||null,chg:null,
               x:p.x,y:p.y,z:p.z,w:p.w,h:p.h,d:p.d,
               holes:p.holes||null, ellipse:p.ellipse||null,
-              curve:p.curve||null, drawn:p.drawn||null};}),
+              curve:p.curve||null, drawn:p.drawn||null, knob:p.knob||null};}),
     dak: DAK};
   document.body.innerHTML = '<pre id="dump">'+JSON.stringify(out)+'</pre>';
 })();
