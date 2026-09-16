@@ -268,10 +268,6 @@
           </table>
         </div>
       </div>
-      <div class="card">
-        <h2>공방에 확인할 것</h2>
-        <div class="bd" id="asks"></div>
-      </div>
     </div>
   </div>
 
@@ -348,10 +344,7 @@ function modelA(){
 
   return { key:"A", title:"서랍 2칸 수납장", parts:P, W:W, H:H, D:D,
     dims:[["가로",W],["높이",H],["깊이",D]],
-    groups:{ "프레임":[0,0,0,0], "아래 서랍":[0,0,1,165], "위 서랍":[0,0,1,165] },
-    asks:"<p class='note'><b>손잡이</b> — 서랍1은 손잡이, 서랍2는 버닝 글씨입니다. 사서 다는지 앞판에 파는지 정해야 합니다.</p>"+
-         "<p class='note'><b>버닝 글씨 문구</b>가 아직 안 정해졌습니다.</p>"+
-         "<p class='note'><b>서랍 여유 2mm</b>로 잡았습니다. 공방에서 더 달라고 하면 구멍을 키우지 말고 서랍을 줄이는 쪽이 낫습니다.</p>" };
+    groups:{ "프레임":[0,0,0,0], "아래 서랍":[0,0,1,165], "위 서랍":[0,0,1,165] } };
 }
 
 function modelB(){
@@ -414,11 +407,7 @@ function modelB(){
     span:[-126, W+100], top:280,
     groups:{ "프레임":[0,0,0,0], "뚜껑":[0,1,0,125],
              "필기도구함":[-1,0,0,150], "포스트잇함":[1,0,0,150],
-             "닭 앞부분":[-0.75,0.3,0,170], "꼬리":[0.75,0.3,0,170] },
-    asks:
-         "<p class='note'><b>볏·부리를 칠하나요?</b> 지금은 한 판이라 나무색 그대로입니다. 칠하면 손그림처럼 됩니다.</p>"+
-         "<p class='note'><b>포스트잇은 소형(51×38) 기준</b>입니다. 함 안쪽이 60 × 135 이라 깊이는 넉넉한데 <b>폭이 60</b>이라 일반(76×76)은 안 들어갑니다. 일반을 쓰시려면 함 안쪽 폭을 80으로 키워야 하고 그만큼 전체 가로가 20 늘어납니다.</p>"+
-         "<p class='note'><b>머리·꼬리 붙이는 방법</b> — 각 함의 바깥 옆판 바깥면에 곧은 변을 맞대어 붙이고 아래는 바닥에 닿습니다. 붙는 면이 15 × 100~120 이라 목공풀로는 붙지만, 다웰(나무못)을 하나 박을 수 있는지 공방에 물어보세요.</p>" };
+             "닭 앞부분":[-0.75,0.3,0,170], "꼬리":[0.75,0.3,0,170] } };
 }
 
 var MODELS = {A:modelA(), B:modelB()};
@@ -651,7 +640,7 @@ function build(key){
   addDim([x1+40,-38,0],[x1+40,-38,model.D], String(model.D));
 
   root.position.set(-ctr.x,-ctr.y,-ctr.z);
-  fitCamera(); renderTable(); renderSide(); renderGroups();
+  fitCamera(); renderTable(); renderGroups();
 }
 
 function addDim(a,b,txt){
@@ -842,9 +831,6 @@ function renderTable(){
   document.getElementById("dims").innerHTML=model.dims.map(function(x){
     return '<div><b>'+x[1]+'</b><span>'+x[0]+' mm</span></div>'; }).join("");
 }
-function renderSide(){
-  document.getElementById("asks").innerHTML=model.asks;
-}
 
 /* ---- 원판 사용률 ---- */
 function usage(){
@@ -980,7 +966,7 @@ resize();
 var startModel = (new URLSearchParams(location.search).get("m")==="B") ? "B" : "A";
 if(startModel==="B"){ tabs[0].setAttribute("aria-selected","false"); tabs[1].setAttribute("aria-selected","true"); }
 build(startModel); tick(); showT();
-document.getElementById("stamp").textContent="2026-09-15 작성";
+document.getElementById("stamp").textContent="2026-09-16 작성";
 
 /* ---- 부재 목록 내보내기. 도면 쪽에서 --dump-dom 으로 읽어간다 ---- */
 (function(){
