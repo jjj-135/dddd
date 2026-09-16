@@ -75,7 +75,7 @@
     border-radius:12px; overflow:hidden; touch-action:none; cursor:grab;
     height:min(76vh, 980px); min-height:340px}
   .stage.grab{cursor:grabbing}
-  .canvas{position:absolute; left:0; top:0; transform-origin:0 0; will-change:transform}
+  .canvas{position:absolute; left:0; top:0}
   .canvas img{display:block; width:100%; height:auto; user-select:none;
     -webkit-user-drag:none; pointer-events:none}
   .canvas svg{position:absolute; left:0; top:0; width:100%; height:100%;
@@ -268,10 +268,12 @@ tkR.oninput = function(){ setT(parseFloat(this.value)); };
 /* ---------- 확대 · 이동 ----------
    끌면 움직이고, 휠 · 손가락 두 개 · 단추로 확대한다.
    canvas 를 통째로 transform 하므로 그림과 숫자가 같이 따라간다 */
-var K = 1, TX = 0, TY = 0, KMIN = 0.05, KMAX = 8;
+var K = 1, TX = 0, TY = 0, KMIN = 0.05, KMAX = 2.5;
 
+/* 크기는 width 로, 자리는 translate 로. scale 을 쓰면 큰 그림에서 잔상이 남는다 */
 function apply(){
-  cvs.style.transform = "translate(" + TX + "px," + TY + "px) scale(" + K + ")";
+  cvs.style.width = Math.round(img.naturalWidth * K) + "px";
+  cvs.style.transform = "translate(" + Math.round(TX) + "px," + Math.round(TY) + "px)";
   document.getElementById("zpct").textContent = Math.round(K * 100) + "%";
 }
 function clampK(k){ return Math.max(KMIN, Math.min(KMAX, k)); }
@@ -311,7 +313,8 @@ function twof(){
           x: (a[0][0]+a[1][0])/2, y: (a[0][1]+a[1][1])/2};
 }
 stage.addEventListener("pointerdown", function(e){
-  stage.setPointerCapture(e.pointerId);
+  e.preventDefault();
+  try{ stage.setPointerCapture(e.pointerId); }catch(err){}
   pts.set(e.pointerId, stagePt(e));
   if(pts.size === 1){ last = pts.get(e.pointerId); stage.classList.add("grab"); }
   else if(pts.size === 2){ pinch = twof(); }
@@ -353,7 +356,6 @@ document.getElementById("zone").onclick = function(){
 addEventListener("resize", function(){ setTimeout(fit, 80); });
 
 img.onload = function(){
-  cvs.style.width = img.naturalWidth + "px";
   document.getElementById("hint").textContent =
     "원본 " + img.naturalWidth + " × " + img.naturalHeight +
     " · 끌어서 이동 · 휠이나 손가락 두 개로 확대 · 두 번 누르면 확대";
